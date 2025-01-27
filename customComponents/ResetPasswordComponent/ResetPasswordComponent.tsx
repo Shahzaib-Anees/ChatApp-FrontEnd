@@ -2,8 +2,17 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import "../../global.css";
+import axios from "axios";
+import Loading from "../Loading/Loading";
+import MessageHandler from "../MessageHandler/MessageHandler";
 
-const ResetPasswordComponent = ({ darkMode }: { darkMode: boolean }) => {
+const ResetPasswordComponent = ({
+  email,
+  darkMode,
+}: {
+  email: string;
+  darkMode: boolean;
+}) => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [newPasswordError, setNewPasswordError] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -11,6 +20,9 @@ const ResetPasswordComponent = ({ darkMode }: { darkMode: boolean }) => {
   const [seeNewPassword, setSeeNewPassword] = useState<boolean>(true);
   const [seeConfirmPassword, setSeeConfirmPassword] = useState<boolean>(true);
   const [allChecked, setAllChecked] = useState<boolean>(false);
+  const [requestProceed, setRequestProceed] = useState<boolean>(false);
+  const [resetSuccess, setResetSuccess] = useState<boolean>(false);
+
   useEffect(() => {
     if (newPassword && confirmPassword) {
       if (!newPasswordError && !confirmPasswordError) {
@@ -22,211 +34,262 @@ const ResetPasswordComponent = ({ darkMode }: { darkMode: boolean }) => {
       setAllChecked(false);
     }
   }, [newPasswordError, confirmPasswordError]);
-  const updatePassword = () => {};
+  const updatePassword = async () => {
+    setRequestProceed(true);
+    try {
+      const apiResponse = await axios.post(
+        "https://chat-app-server-drab.vercel.app/api/user/resetPassword",
+        {
+          email: email,
+          password: newPassword,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (apiResponse.status == 200) {
+        setResetSuccess(true);
+        // Yahin se naviagte krna hai
+      }
+    } catch (error: any) {
+      if (
+        error.response?.data?.message ==
+        "New Password cannot be the same as the previous password"
+      ) {
+        setNewPasswordError(
+          "New Password cannot be the same as the previous password"
+        );
+      }
+    } finally {
+      setRequestProceed(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+  };
   return (
-    <View className="w-[100%] items-center justify-center mt-6">
-      <View className="w-[100%] gap-[2px] mt-4 py-3">
-        <Text
-          className={`text-[24px] ${
-            darkMode ? "text-[#fff]" : "text-[#000]"
-          } tracking-wider`}
-          style={{
-            fontFamily: "PoppinsBold",
-          }}
-        >
-          Set a new Password
-        </Text>
-        <Text
-          className={`text-[16px] ${
-            darkMode ? "text-[#c6c5c4]" : "text-[#868686]"
-          }`}
-          style={{
-            fontFamily: "PoppinsSemiBold",
-          }}
-        >
-          Create a new password. Ensure it differs from your previous ones for
-          security.
-        </Text>
-      </View>
-      {/* Input fields Container  */}
-      <View className="items-center w-[100%] gap-[50px] mt-[30px]">
-        <View className="w-[100%] gap-[5px]">
+    <>
+      <View className="w-[100%] items-center justify-center mt-6 px-6">
+        <View className="w-[100%] gap-[2px] mt-4 py-3">
           <Text
-            className={`text-[15px] ${
-              darkMode
-                ? newPasswordError
-                  ? "text-[#ff0000]"
-                  : "text-[#7decc7]"
-                : newPasswordError
-                ? "text-[#ff0000]"
-                : "text-[#1f8a66]"
-            }`}
+            className={`text-[24px] ${
+              darkMode ? "text-[#fff]" : "text-[#000]"
+            } tracking-wider`}
             style={{
-              fontFamily: "RobotoBold",
+              fontFamily: "PoppinsBold",
             }}
           >
-            Password
+            Set a new Password
           </Text>
-          <View
-            className={`w-[100%] flex-row items-center justify-between border-b-[1px] pr-9 ${
-              darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
-            } ${newPasswordError && "border-b-[#ff0000]"}`}
-          >
-            <TextInput
-              className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
-                darkMode ? "text-[#fff]" : "text-[#000]"
-              } font-semibold ${
-                darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-              }`}
-              value={newPassword}
-              onChangeText={(event) => {
-                const currentPassword = event.valueOf();
-                setNewPassword(currentPassword);
-                if (currentPassword?.length < 8) {
-                  setNewPasswordError(
-                    "Password must be at least 8 characters long"
-                  );
-                } else {
-                  setNewPasswordError("");
-                }
-              }}
-              secureTextEntry={seeNewPassword}
-            />
-            <View
-              className={`pl-3 border-l-[1px] ${
-                darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
-              }`}
-              onTouchEnd={() => setSeeNewPassword(!seeNewPassword)}
-            >
-              {!seeNewPassword ? (
-                <Feather
-                  name="eye-off"
-                  size={18}
-                  color={darkMode ? "#6e6e6d" : "#4b4a4a"}
-                />
-              ) : (
-                <Feather
-                  name="eye"
-                  size={18}
-                  color={darkMode ? "#6e6e6d" : "#4b4a4a"}
-                />
-              )}
-            </View>
-          </View>
-          {newPasswordError && (
-            <Text
-              className={`text-[12px] ${
-                darkMode ? "text-[#ff0000]" : "text-[#ff0000]"
-              }`}
-              style={{
-                fontFamily: "RobotoBold",
-              }}
-            >
-              {newPasswordError}
-            </Text>
-          )}
-        </View>
-        <View className="w-[100%] gap-[5px]">
-          <Text
-            className={`text-[15px] ${
-              darkMode
-                ? confirmPasswordError
-                  ? "text-[#ff0000]"
-                  : "text-[#7decc7]"
-                : confirmPasswordError
-                ? "text-[#ff0000]"
-                : "text-[#1f8a66]"
-            }`}
-            style={{
-              fontFamily: "RobotoBold",
-            }}
-          >
-            Confirm Password
-          </Text>
-          <View
-            className={`w-[100%] flex-row items-center justify-between border-b-[1px] pr-9 ${
-              darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
-            } `}
-          >
-            <TextInput
-              className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
-                darkMode ? "text-[#fff]" : "text-[#000]"
-              } font-semibold ${
-                darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-              } ${confirmPasswordError && "border-b-[#ff0000]"}`}
-              value={confirmPassword}
-              onChangeText={(event) => {
-                const currentPassword = event.valueOf();
-                setConfirmPassword(currentPassword);
-                if (!newPassword) {
-                  return setNewPasswordError("Please enter a password");
-                }
-                if (currentPassword !== newPassword) {
-                  setConfirmPasswordError(
-                    "Confirm Password must match the above password"
-                  );
-                } else {
-                  setConfirmPasswordError("");
-                }
-              }}
-              secureTextEntry={seeConfirmPassword}
-            />
-            <View
-              className={`pl-3 border-l-[1px] ${
-                darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
-              }`}
-              onTouchEnd={() => setSeeConfirmPassword(!seeConfirmPassword)}
-            >
-              {!seeConfirmPassword ? (
-                <Feather
-                  name="eye-off"
-                  size={18}
-                  color={darkMode ? "#6e6e6d" : "#4b4a4a"}
-                />
-              ) : (
-                <Feather
-                  name="eye"
-                  size={18}
-                  color={darkMode ? "#6e6e6d" : "#4b4a4a"}
-                />
-              )}
-            </View>
-          </View>
-          {confirmPasswordError && (
-            <Text
-              className={`text-[12px] ${
-                darkMode ? "text-[#ff0000]" : "text-[#ff0000]"
-              }`}
-              style={{
-                fontFamily: "RobotoBold",
-              }}
-            >
-              {confirmPasswordError}
-            </Text>
-          )}
-        </View>
-      </View>
-      <View className="w-[100%%] items-center justify-center gap-2 mt-[20px]">
-        <TouchableOpacity
-          className={`w-[100%] items-center justify-center p-[14px] ${
-            !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
-          } rounded-[12px]`}
-          disabled={!allChecked}
-        >
           <Text
             className={`text-[16px] ${
-              !allChecked ? "text-[#9e9d9d]" : "text-[#fff]"
+              darkMode ? "text-[#c6c5c4]" : "text-[#868686]"
             }`}
             style={{
-              fontFamily: "RobotoBold",
+              fontFamily: "PoppinsSemiBold",
             }}
+          >
+            Create a new password. Ensure it differs from your previous ones for
+            security.
+          </Text>
+        </View>
+        {/* Input fields Container  */}
+        <View className="items-center w-[100%] gap-[50px] mt-[30px]">
+          <View className="w-[100%] gap-[5px]">
+            <Text
+              className={`text-[15px] ${
+                darkMode
+                  ? newPasswordError
+                    ? "text-[#ff0000]"
+                    : "text-[#7decc7]"
+                  : newPasswordError
+                  ? "text-[#ff0000]"
+                  : "text-[#1f8a66]"
+              }`}
+              style={{
+                fontFamily: "RobotoBold",
+              }}
+            >
+              Password
+            </Text>
+            <View
+              className={`w-[100%] flex-row items-center justify-between border-b-[1px] pr-9 ${
+                darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
+              } ${newPasswordError && "border-b-[#ff0000]"}`}
+            >
+              <TextInput
+                className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
+                  darkMode ? "text-[#fff]" : "text-[#000]"
+                } font-semibold ${
+                  darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
+                }`}
+                value={newPassword}
+                onChangeText={(event) => {
+                  const currentPassword = event.valueOf();
+                  setNewPassword(currentPassword);
+                  if (currentPassword?.length < 8) {
+                    setNewPasswordError(
+                      "Password must be at least 8 characters long"
+                    );
+                  } else {
+                    setNewPasswordError("");
+                  }
+                }}
+                secureTextEntry={seeNewPassword}
+              />
+              <View
+                className={`pl-3 border-l-[1px] ${
+                  darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
+                }`}
+                onTouchEnd={() => setSeeNewPassword(!seeNewPassword)}
+              >
+                {!seeNewPassword ? (
+                  <Feather
+                    name="eye-off"
+                    size={18}
+                    color={darkMode ? "#6e6e6d" : "#4b4a4a"}
+                  />
+                ) : (
+                  <Feather
+                    name="eye"
+                    size={18}
+                    color={darkMode ? "#6e6e6d" : "#4b4a4a"}
+                  />
+                )}
+              </View>
+            </View>
+            {newPasswordError && (
+              <Text
+                className={`text-[12px] ${
+                  darkMode ? "text-[#ff0000]" : "text-[#ff0000]"
+                }`}
+                style={{
+                  fontFamily: "RobotoBold",
+                }}
+              >
+                {newPasswordError}
+              </Text>
+            )}
+          </View>
+          <View className="w-[100%] gap-[5px]">
+            <Text
+              className={`text-[15px] ${
+                darkMode
+                  ? confirmPasswordError
+                    ? "text-[#ff0000]"
+                    : "text-[#7decc7]"
+                  : confirmPasswordError
+                  ? "text-[#ff0000]"
+                  : "text-[#1f8a66]"
+              }`}
+              style={{
+                fontFamily: "RobotoBold",
+              }}
+            >
+              Confirm Password
+            </Text>
+            <View
+              className={`w-[100%] flex-row items-center justify-between border-b-[1px] pr-9 ${
+                darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
+              }  ${confirmPasswordError && "border-b-[#ff0000]"}`}
+            >
+              <TextInput
+                className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
+                  darkMode ? "text-[#fff]" : "text-[#000]"
+                } font-semibold ${
+                  darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
+                }`}
+                value={confirmPassword}
+                onChangeText={(event) => {
+                  const currentPassword = event.valueOf();
+                  setConfirmPassword(currentPassword);
+                  if (!newPassword) {
+                    return setNewPasswordError("Please enter a password");
+                  }
+                  if (currentPassword !== newPassword) {
+                    setConfirmPasswordError(
+                      "Confirm Password must match the above password"
+                    );
+                  } else {
+                    setConfirmPasswordError("");
+                  }
+                }}
+                secureTextEntry={seeConfirmPassword}
+              />
+              <View
+                className={`pl-3 border-l-[1px] ${
+                  darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
+                }`}
+                onTouchEnd={() => setSeeConfirmPassword(!seeConfirmPassword)}
+              >
+                {!seeConfirmPassword ? (
+                  <Feather
+                    name="eye-off"
+                    size={18}
+                    color={darkMode ? "#6e6e6d" : "#4b4a4a"}
+                  />
+                ) : (
+                  <Feather
+                    name="eye"
+                    size={18}
+                    color={darkMode ? "#6e6e6d" : "#4b4a4a"}
+                  />
+                )}
+              </View>
+            </View>
+            {confirmPasswordError && (
+              <Text
+                className={`text-[12px] ${
+                  darkMode ? "text-[#ff0000]" : "text-[#ff0000]"
+                }`}
+                style={{
+                  fontFamily: "RobotoBold",
+                }}
+              >
+                {confirmPasswordError}
+              </Text>
+            )}
+          </View>
+        </View>
+        <View className="w-[100%%] items-center justify-center gap-2 mt-[20px]">
+          <TouchableOpacity
+            className={`w-[100%] items-center justify-center p-[14px] ${
+              !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
+            } rounded-[12px]`}
+            disabled={!allChecked || requestProceed}
             onPress={updatePassword}
           >
-            Update Password
-          </Text>
-        </TouchableOpacity>
+            <Text
+              className={`text-[16px] ${
+                !allChecked ? "text-[#9e9d9d]" : "text-[#fff]"
+              }`}
+              style={{
+                fontFamily: "RobotoBold",
+              }}
+            >
+              {requestProceed ? "Updating" : "Update Password"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+      {requestProceed && (
+        <View className="absolute top-0 left-0 w-[100%] h-[100%]">
+          <Loading text="Reseting..." />
+        </View>
+      )}
+      {resetSuccess && (
+        <View
+          className="w-[100%] items-center justify-center"
+          style={{
+            position: "absolute",
+            bottom: 40,
+          }}
+        >
+          <MessageHandler text="Password reset successfully" />
+        </View>
+      )}
+    </>
   );
 };
 

@@ -21,7 +21,6 @@ import {
   Poppins_700Bold,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
-import { DarkTheme } from "@react-navigation/native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,16 +50,16 @@ export default function App() {
         await Font.loadAsync(Entypo.font);
         await new Promise((resolve) => setTimeout(resolve, 2000));
         const themeMode = await AsyncStorage.getItem("themeMode");
-        if (themeMode !== null) {
-          console.log(themeMode);
-          if (themeMode === "dark") {
-            dispatch(setTheme({ darkMode: true }));
-          } else {
-            dispatch(setTheme({ darkMode: false }));
-          }
-        } else {
-          dispatch(setTheme({ darkMode: false }));
-        }
+        // if (themeMode !== null) {
+        //   console.log(themeMode);
+        //   if (themeMode === "dark") {
+        //     dispatch(setTheme({ darkMode: true }));
+        //   } else {
+        //     dispatch(setTheme({ darkMode: false }));
+        //   }
+        // } else {
+        //   dispatch(setTheme({ darkMode: false }));
+        // }
       } catch (e) {
         console.warn(e);
       } finally {

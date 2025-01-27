@@ -4,16 +4,22 @@ import { Forget_Password_Types } from "@/types/forgetPassword.types";
 import { useSelector } from "react-redux";
 import VerificationCodeComponent from "@/customComponents/VerificationCodeComponent/VerificationCodeComponent";
 import ResetPasswordComponent from "@/customComponents/ResetPasswordComponent/ResetPasswordComponent";
+import axios from "axios";
+import Loading from "@/customComponents/Loading/Loading";
 
 const forgetPassword = () => {
   const [userEmail, setUserEmail] = useState<string>("");
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const selector = useSelector((state: any) => state.theme);
+  const [requestProceed, setRequestProceed] = useState<boolean>(false);
+  const type = "password_reset";
   const [view, setView] = useState<Forget_Password_Types>(
     Forget_Password_Types.email_interface
   );
   const [emailChecked, setEmailChecked] = useState<boolean>(false);
   const [userEmailError, setUserEmailError] = useState<string>("");
+
+  // Checking for DarkMode
   useEffect(() => {
     const { darkTheme } = selector;
     if (darkTheme) {
@@ -34,18 +40,41 @@ const forgetPassword = () => {
     } else {
       setEmailChecked(false);
     }
-  }, [userEmail]);
+  }, [userEmail, userEmailError]);
 
-  const checkEmail = () => {
-    console.log("Email Checked");
-    setView(Forget_Password_Types.code_interface);
+  // Requset Code after finding account
+  const requestCode = async () => {
+    setRequestProceed(true);
+    try {
+      const apiResponse = await axios.post(
+        "https://chat-app-server-drab.vercel.app/api/user/sentCode",
+        {
+          email: userEmail,
+          type: type,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (apiResponse.status === 200) {
+        setView(Forget_Password_Types.code_interface);
+      }
+    } catch (error: any) {
+      if (error.response.status === 404) {
+        setUserEmailError("Account not found");
+      }
+    } finally {
+      setRequestProceed(false);
+    }
   };
 
   const renderedContent = () => {
     switch (view) {
       case Forget_Password_Types.email_interface:
         return (
-          <View className="w-[100%] items-center justify-center mt-6">
+          <View className="w-[100%] items-center justify-center mt-6 px-6">
             <View className="w-[100%] gap-[2px] mt-4 py-3">
               <Text
                 className={`text-[24px] ${
@@ -123,9 +152,11 @@ const forgetPassword = () => {
               <TouchableOpacity
                 className={`w-[100%] items-center justify-center p-[14px] ${
                   !emailChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
-                } rounded-[12px]`}
-                disabled={!emailChecked}
-                onPress={checkEmail}
+                } rounded-[12px] ${
+                  requestProceed ? "opacity-30" : "opacity-100"
+                } `}
+                disabled={!emailChecked || requestProceed}
+                onPress={requestCode}
               >
                 <Text
                   className={`text-[16px] ${
@@ -135,7 +166,7 @@ const forgetPassword = () => {
                     fontFamily: "RobotoBold",
                   }}
                 >
-                  Reset Password
+                  {requestProceed ? "Finding..." : "Find my account"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -143,8 +174,9 @@ const forgetPassword = () => {
         );
       case Forget_Password_Types.code_interface:
         return (
-          <View className="w-[100%] items-center justify-center mt-6">
-            <View className="w-[100%] gap-[2px] mt-4 py-3">
+          <View className="flex-1 relative">
+            {/* Header Text Container  */}
+            <View className="w-[100%] gap-[2px] mt-4 px-6 py-3">
               <Text
                 className={`text-[24px] ${
                   darkMode ? "text-[#fff]" : "text-[#000]"
@@ -170,25 +202,30 @@ const forgetPassword = () => {
                 enter 5 digit code that is mentioned in the email.
               </Text>
             </View>
-            <View className="w-[100%] my-1">
-              <VerificationCodeComponent
-                darkMode={darkMode}
-                setView={setView}
-              />
-            </View>
+            <VerificationCodeComponent
+              email={userEmail}
+              type={type}
+              darkMode={darkMode}
+              setView={setView}
+            />
           </View>
         );
       case Forget_Password_Types.reset_password:
         return (
-          <View className="w-[100%] items-center justify-center">
-            <ResetPasswordComponent darkMode={darkMode} />
+          <View className="flex-1 relative">
+            <ResetPasswordComponent darkMode={darkMode} email={userEmail} />
           </View>
         );
     }
   };
   return (
     <>
-      <View className={`flex-1 px-6`}>{renderedContent()}</View>
+      <View className={`flex-1`}>{renderedContent()}</View>
+      {requestProceed && (
+        <View className="absolute top-0 left-0 w-[100%] h-[100%]">
+          <Loading text="Finding account..." />
+        </View>
+      )}
     </>
   );
 };

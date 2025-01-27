@@ -1,27 +1,27 @@
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
+  TextInput,
   StyleSheet,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Forget_Password_Types } from "@/types/forgetPassword.types";
-import "../../global.css";
+import { Register_Interface_Types } from "@/types/registerInterface.types";
 import axios from "axios";
+import "@/global.css";
 import Loading from "../Loading/Loading";
 import MessageHandler from "../MessageHandler/MessageHandler";
 
-const VerificationCodeComponent = ({
+const VerificationEmailComponent = ({
+  darkMode,
   email,
   type,
-  darkMode,
   setView,
 }: {
+  darkMode: boolean;
   email: string;
   type: string;
-  darkMode: boolean;
-  setView: React.Dispatch<React.SetStateAction<Forget_Password_Types>>;
+  setView: React.Dispatch<React.SetStateAction<Register_Interface_Types>>;
 }) => {
   const [otp, setOtp] = useState<string>("");
   const [codeChecked, setCodeChecked] = useState<boolean>(false);
@@ -29,8 +29,7 @@ const VerificationCodeComponent = ({
   const [count, setCount] = useState<number>(60);
   const [requestResendCode, setRequestResendCode] = useState<boolean>(false);
   const [requestProceed, setRequestProceed] = useState<boolean>(false);
-  const [verificationSuccess, setVerificationSuccess] =
-    useState<boolean>(false);
+  const [registeredSuccess, setRegisteredSuccess] = useState<boolean>(false);
   //   Refrence Input Object
   const refInputs: { [key: string]: TextInput | null } = {};
   const handleChangeText = (input: string, index: number) => {
@@ -98,9 +97,10 @@ const VerificationCodeComponent = ({
           },
         }
       );
+      console.log(apiResponse.data);
       if (apiResponse.status === 200) {
-        setVerificationSuccess(true);
-        setView(Forget_Password_Types.reset_password);
+        setRegisteredSuccess(true);
+        // Yahin se naviagte krna hai
       }
     } catch (error: any) {
       console.log("Status:", error.response?.status);
@@ -114,13 +114,31 @@ const VerificationCodeComponent = ({
     }
   };
 
-  const askNewCode = () => {
-    setRequestResendCode(false);
+  const askNewCode = async () => {
+    try {
+      const makeRequestForCode = await axios.post(
+        "https://chat-app-server-drab.vercel.app/api/user/sentCode",
+        {
+          email: email,
+          type: type,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(makeRequestForCode.data);
+    } catch (error: any) {
+      console.log("Status:", error.response?.status);
+      console.log("Message:", error.response?.data);
+    }
     setCount(60);
+    setRequestResendCode(false);
   };
   return (
     <>
-      <View className="w-[100%] px-6">
+      <View className="w-[100%]">
         <View className="w-[100%] gap-3">
           <View className="w-[100%] flex-row items-center justify-center gap-4">
             {inputs.map((digit, index) => {
@@ -145,27 +163,32 @@ const VerificationCodeComponent = ({
               );
             })}
           </View>
-          {count > 0 && (
-            <Text style={styles.conditionalText}>
-              You can request a new code in{" "}
-              <Text className="text-[#1f8a66] text-[16px]">
-                {" "}
-                {`00 : ${count < 10 ? `0${count}` : `${count}`}`}
+          <View className="w-[100%] px-4">
+            {count > 0 && (
+              <Text style={styles.conditionalText}>
+                You can request a new code in{" "}
+                <Text className="text-[#1f8a66] text-[16px]">
+                  {" "}
+                  {`00 : ${count < 10 ? `0${count}` : `${count}`}`}
+                </Text>
               </Text>
-            </Text>
-          )}
-          {requestResendCode && (
-            <Text style={styles.conditionalText}>
-              Didn't receive the code?{" "}
-              <Text className="text-[#1f8a66] text-[16px]" onPress={askNewCode}>
-                Resend Code
+            )}
+            {requestResendCode && (
+              <Text style={styles.conditionalText}>
+                Didn't receive the code?{" "}
+                <Text
+                  className="text-[#1f8a66] text-[16px]"
+                  onPress={askNewCode}
+                >
+                  Resend Code
+                </Text>
               </Text>
-            </Text>
-          )}
+            )}
+          </View>
         </View>
 
         {/* Footer Buttons  */}
-        <View className="w-[100%%] items-center justify-center mt-7">
+        <View className="w-[100%%] items-center justify-center mt-7 px-4">
           <TouchableOpacity
             className={`w-[100%] items-center justify-center p-[14px] ${
               !codeChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
@@ -193,7 +216,7 @@ const VerificationCodeComponent = ({
         </View>
       )}
 
-      {verificationSuccess && (
+      {registeredSuccess && (
         <View
           className="w-[100%] items-center justify-center"
           style={{
@@ -201,7 +224,7 @@ const VerificationCodeComponent = ({
             bottom: 40,
           }}
         >
-          <MessageHandler text="Verified successfully" />
+          <MessageHandler text="Registered successfully" />
         </View>
       )}
     </>
@@ -233,4 +256,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VerificationCodeComponent;
+export default VerificationEmailComponent;
