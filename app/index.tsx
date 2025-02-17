@@ -118,7 +118,7 @@ export default function App() {
         </View>
         <View className="w-[100%] items-center justify-center px-4 mt-[15px] ">
           <TouchableOpacity className="w-[100%] bg-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]">
-            <Link href={"/Register"}>
+            <Link href={"/Register"} className="w-[100%]">
               <Text className="text-[#000] text-[18px] font-semibold text-center">
                 Sign up with email
               </Text>
@@ -135,7 +135,7 @@ export default function App() {
             Already have an account ?
           </Text>
           <TouchableOpacity className="w-[100%] border-[1px] border-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]">
-            <Link href={"/Login"}>
+            <Link href={"/Login"} className="w-[100%]">
               <Text
                 style={{
                   fontSize: 20,

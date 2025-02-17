@@ -277,7 +277,7 @@ const Login = () => {
             bottom: 40,
           }}
         >
-          <MessageHandler text="Logged in successfully" />
+          <MessageHandler message="Logged in successfully" />
         </View>
       )}
     </>

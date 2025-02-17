@@ -2,10 +2,10 @@ import { View, Text, Animated } from "react-native";
 import React, { useEffect, useRef } from "react";
 import "@/global.css";
 const MessageHandler = ({
-  text,
+  message,
   duration = 3000,
 }: {
-  text: string;
+  message: string;
   duration?: number;
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -14,17 +14,17 @@ const MessageHandler = ({
     Animated.sequence([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 1000,
         useNativeDriver: true,
       }),
       Animated.delay(duration),
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 1000,
+        duration: 3000,
         useNativeDriver: true,
       }),
     ]).start();
-  }, [text]);
+  }, [message]);
 
   return (
     <Animated.View
@@ -36,7 +36,7 @@ const MessageHandler = ({
           alignItems: "center",
           justifyContent: "center",
           gap: 5,
-          backgroundColor: "rgba(0,0,0,0.8)",
+          backgroundColor: "rgba(0,0,0,0.9)",
           padding: 1,
           borderRadius: 8,
           shadowColor: "#000",
@@ -68,7 +68,7 @@ const MessageHandler = ({
           fontSize: 14,
         }}
       >
-        {text}
+        {message ? message : "No Message"}
       </Text>
     </Animated.View>
   );
