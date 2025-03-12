@@ -9,7 +9,6 @@ import { setTheme } from "@/Utils/redux/reducers/theme.slice";
 import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import "@/global.css";
-const headerIcon = require("../assets/images/ChatApp-Auth-Header-Icon.png");
 import {
   PermanentMarker_400Regular,
   useFonts,
@@ -22,12 +21,12 @@ import {
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
-SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
-});
+// SplashScreen.setOptions({
+//   duration: 1000,
+//   fade: true,
+// });
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -47,19 +46,19 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
+        await SplashScreen.preventAutoHideAsync();
         await Font.loadAsync(Entypo.font);
         await new Promise((resolve) => setTimeout(resolve, 2000));
         const themeMode = await AsyncStorage.getItem("themeMode");
-        // if (themeMode !== null) {
-        //   console.log(themeMode);
-        //   if (themeMode === "dark") {
-        //     dispatch(setTheme({ darkMode: true }));
-        //   } else {
-        //     dispatch(setTheme({ darkMode: false }));
-        //   }
-        // } else {
-        //   dispatch(setTheme({ darkMode: false }));
-        // }
+        if (themeMode !== null) {
+          if (themeMode === "dark") {
+            dispatch(setTheme({ darkMode: true }));
+          } else {
+            dispatch(setTheme({ darkMode: false }));
+          }
+        } else {
+          dispatch(setTheme({ darkMode: false }));
+        }
       } catch (e) {
         console.warn(e);
       } finally {
@@ -70,9 +69,9 @@ export default function App() {
     prepare();
   }, []);
 
-  const onLayoutRootView = useCallback(() => {
+  const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
-      SplashScreen.hide();
+      await SplashScreen.hideAsync();
       if (isAuthenticated) {
         console.log("Authenticated");
       } else {

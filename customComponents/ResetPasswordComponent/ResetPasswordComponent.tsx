@@ -104,8 +104,8 @@ const ResetPasswordComponent = ({
                     ? "text-[#ff0000]"
                     : "text-[#7decc7]"
                   : newPasswordError
-                  ? "text-[#ff0000]"
-                  : "text-[#1f8a66]"
+                    ? "text-[#ff0000]"
+                    : "text-[#1f8a66]"
               }`}
               style={{
                 fontFamily: "RobotoBold",
@@ -180,8 +180,8 @@ const ResetPasswordComponent = ({
                     ? "text-[#ff0000]"
                     : "text-[#7decc7]"
                   : confirmPasswordError
-                  ? "text-[#ff0000]"
-                  : "text-[#1f8a66]"
+                    ? "text-[#ff0000]"
+                    : "text-[#1f8a66]"
               }`}
               style={{
                 fontFamily: "RobotoBold",
@@ -286,7 +286,7 @@ const ResetPasswordComponent = ({
             bottom: 40,
           }}
         >
-          <MessageHandler text="Password reset successfully" />
+          <MessageHandler message="Password reset successfully" />
         </View>
       )}
     </>

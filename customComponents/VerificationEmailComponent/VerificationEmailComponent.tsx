@@ -224,7 +224,7 @@ const VerificationEmailComponent = ({
             bottom: 40,
           }}
         >
-          <MessageHandler text="Registered successfully" />
+          <MessageHandler message="Registered successfully" />
         </View>
       )}
     </>

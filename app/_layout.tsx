@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <App />
+      <App />   
     </Provider>
   );
 }
