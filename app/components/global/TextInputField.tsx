@@ -1,7 +1,8 @@
 import { View, Text, TextInput } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, Control, useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
+import Feather from "@expo/vector-icons/Feather";
 
 const TextInputField = ({
   label,
@@ -27,6 +28,7 @@ const TextInputField = ({
     control,
     formState: { errors },
   } = useFormContext();
+  const [ifSeePassword, setIfSeePassword] = useState<boolean>(false);
   return (
     <View className="w-[100%]">
       <Text
@@ -55,7 +57,7 @@ const TextInputField = ({
         render={({ field: { onChange, onBlur, value } }) => (
           <View className="w-[100%] flex-col gap-2">
             <View
-              className={`w-[100%] ${
+              className={`w-[100%] flex-row items-center justify-between ${
                 type === "password"
                   ? errors[name]?.message
                     ? "border-b-[1px] border-b-[#ff0000]"
@@ -75,8 +77,8 @@ const TextInputField = ({
                   }
                 }}
                 value={value}
-                secureTextEntry={secureTextEntry}
-                className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
+                secureTextEntry={secureTextEntry && !ifSeePassword}
+                className={`${type === "password" ? "w-[80%]" : "w-[100%]"} h-[40px] rounded-[2px] px-1 text-[16px] ${
                   darkMode ? "text-[#fff]" : "text-[#000]"
                 } font-semibold ${
                   darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
@@ -91,6 +93,28 @@ const TextInputField = ({
                 } 
                   ${errors[name] && type !== "password" && "border-b-[1px] border-b-[#ff0000]"}`}
               />
+              {type === "password" && (
+                <View
+                  className={`pl-3 border-l-[1px] ${
+                    darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
+                  }`}
+                  onTouchEnd={() => setIfSeePassword(!ifSeePassword)}
+                >
+                  {!ifSeePassword ? (
+                    <Feather
+                      name="eye-off"
+                      size={18}
+                      color={darkMode ? "#6e6e6d" : "#4b4a4a"}
+                    />
+                  ) : (
+                    <Feather
+                      name="eye"
+                      size={18}
+                      color={darkMode ? "#6e6e6d" : "#4b4a4a"}
+                    />
+                  )}
+                </View>
+              )}
             </View>
 
             {errors[name]?.message && (

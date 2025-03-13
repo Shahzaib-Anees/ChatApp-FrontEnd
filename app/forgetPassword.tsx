@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Forget_Password_Types } from "@/types/forgetPassword.types";
 import { useSelector } from "react-redux";
@@ -6,67 +6,57 @@ import VerificationCodeComponent from "@/customComponents/VerificationCodeCompon
 import ResetPasswordComponent from "@/customComponents/ResetPasswordComponent/ResetPasswordComponent";
 import axios from "axios";
 import Loading from "@/customComponents/Loading/Loading";
+import { FormProvider, useForm } from "react-hook-form";
+import TextInputField from "./components/global/TextInputField";
+import { useOtpRequestMutation } from "@/Utils/redux/apiQuery/authApi";
+import MessageHandler from "@/customComponents/MessageHandler/MessageHandler";
 
 const forgetPassword = () => {
   const [userEmail, setUserEmail] = useState<string>("");
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-  const selector = useSelector((state: any) => state.theme);
-  const [requestProceed, setRequestProceed] = useState<boolean>(false);
+  const darkMode = useSelector((state: any) => state.theme?.darkTheme);
   const type = "password_reset";
   const [view, setView] = useState<Forget_Password_Types>(
     Forget_Password_Types.email_interface
   );
   const [emailChecked, setEmailChecked] = useState<boolean>(false);
-  const [userEmailError, setUserEmailError] = useState<string>("");
+  const [requestOtp, { isLoading, isSuccess }] = useOtpRequestMutation();
 
-  // Checking for DarkMode
-  useEffect(() => {
-    const { darkTheme } = selector;
-    if (darkTheme) {
-      setDarkMode(true);
-    } else {
-      setDarkMode(false);
-    }
-  }, []);
+  const methods = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
 
-  // Email Checked
+  const email = methods.watch("email");
+  const isValid = methods.formState.isValid;
+
+  // Email Validation CheckedMark
   useEffect(() => {
-    if (userEmail) {
-      if (!userEmailError) {
-        setEmailChecked(true);
-      } else {
-        setEmailChecked(false);
-      }
+    if (email && isValid) {
+      setEmailChecked(true);
     } else {
       setEmailChecked(false);
     }
-  }, [userEmail, userEmailError]);
+  }, [email, isValid]);
 
   // Requset Code after finding account
-  const requestCode = async () => {
-    setRequestProceed(true);
+  const onSubmit = async (data: any) => {
     try {
-      const apiResponse = await axios.post(
-        "https://chat-app-server-drab.vercel.app/api/user/sentCode",
-        {
-          email: userEmail,
-          type: type,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (apiResponse.status === 200) {
+      const apiResponse: any = await requestOtp({
+        email: data?.email,
+        type: type,
+      }).unwrap();
+      if (apiResponse?.message === "Email sent") {
         setView(Forget_Password_Types.code_interface);
       }
     } catch (error: any) {
-      if (error.response.status === 404) {
-        setUserEmailError("Account not found");
+      if (error?.message === "No account found with this email") {
+        methods.setError("email", {
+          message: "No account found with this email",
+        });
       }
-    } finally {
-      setRequestProceed(false);
     }
   };
 
@@ -97,66 +87,32 @@ const forgetPassword = () => {
                 Please enter your email address to reset your password
               </Text>
             </View>
-            <View className="w-[100%] gap-[2px] mt-7 py-3">
-              <Text
-                className={`text-[15px] ${
-                  darkMode
-                    ? userEmailError
-                      ? "text-[#ff0000]"
-                      : "text-[#7decc7]"
-                    : userEmailError
-                    ? "text-[#ff0000]"
-                    : "text-[#1f8a66]"
-                } w-[100%]`}
-                style={{
-                  fontFamily: "RobotoBold",
-                }}
-              >
-                Your Email
-              </Text>
-              <View>
-                <TextInput
-                  className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
-                    darkMode ? "text-[#fff]" : "text-[#000]"
-                  } font-semibold ${
-                    darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-                  } border-b-[2px] ${
-                    darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
-                  } ${userEmailError && "border-b-[#ff0000]"}`}
-                  value={userEmail}
-                  onChangeText={(event) => {
-                    const currentEmail = event.valueOf();
-                    setUserEmail(currentEmail);
-
-                    if (
-                      !currentEmail.includes("@") ||
-                      !currentEmail.includes(".com")
-                    ) {
-                      setUserEmailError(
-                        "Your email should be in the format of abc@example.com"
-                      );
-                    } else {
-                      setUserEmailError("");
-                    }
-                  }}
-                />
-                {userEmailError && (
-                  <Text className="text-[12px] text-[#ff0000]">
-                    {userEmailError}
-                  </Text>
-                )}
-              </View>
-            </View>
+            {/* Email Input Field  */}
+            <TextInputField
+              label="Your Email"
+              name="email"
+              secureTextEntry={false}
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message:
+                    "Your email should be in the format of abc@example.com",
+                },
+              }}
+              onChangeValue={(value: string) => {
+                setUserEmail(value);
+              }}
+              type="email"
+            />
             {/* Footer Buttons  */}
             <View className="w-[100%%] items-center justify-center mt-7">
               <TouchableOpacity
                 className={`w-[100%] items-center justify-center p-[14px] ${
                   !emailChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
-                } rounded-[12px] ${
-                  requestProceed ? "opacity-30" : "opacity-100"
-                } `}
-                disabled={!emailChecked || requestProceed}
-                onPress={requestCode}
+                } rounded-[12px] ${isLoading ? "opacity-30" : "opacity-100"} `}
+                disabled={!emailChecked || isLoading}
+                onPress={methods.handleSubmit(onSubmit)}
               >
                 <Text
                   className={`text-[16px] ${
@@ -166,7 +122,7 @@ const forgetPassword = () => {
                     fontFamily: "RobotoBold",
                   }}
                 >
-                  {requestProceed ? "Finding..." : "Find my account"}
+                  {isLoading ? "Finding..." : "Find my account"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -220,10 +176,24 @@ const forgetPassword = () => {
   };
   return (
     <>
-      <View className={`flex-1`}>{renderedContent()}</View>
-      {requestProceed && (
+      <FormProvider {...methods}>
+        <View className={`flex-1`}>{renderedContent()}</View>
+      </FormProvider>
+      {isLoading && (
         <View className="absolute top-0 left-0 w-[100%] h-[100%]">
           <Loading text="Finding account..." />
+        </View>
+      )}
+      {isSuccess && (
+        <View
+          className="w-[100%] items-center justify-center"
+          style={{
+            position: "absolute",
+            bottom: 40,
+            zIndex: 4,
+          }}
+        >
+          <MessageHandler message="Code sent successfully" />
         </View>
       )}
     </>
