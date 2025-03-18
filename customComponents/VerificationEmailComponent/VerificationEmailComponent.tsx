@@ -11,25 +11,51 @@ import axios from "axios";
 import "@/global.css";
 import Loading from "../Loading/Loading";
 import MessageHandler from "../MessageHandler/MessageHandler";
+import { Login_Interface_Types } from "@/types/loginInterface.types";
+import { Forget_Password_Types } from "@/types/forgetPassword.types";
+import {
+  useOtpRequestMutation,
+  useVerifyOtpMutation,
+} from "@/Utils/redux/apiQuery/authApi";
+import { useSelector } from "react-redux";
 
-const VerificationEmailComponent = ({
-  darkMode,
+type AuthTypes = "register" | "login" | "forgetPassword";
+
+type SetViewTypes<T extends AuthTypes> = T extends "register"
+  ? React.Dispatch<React.SetStateAction<Register_Interface_Types>>
+  : T extends "login"
+    ? React.Dispatch<React.SetStateAction<Login_Interface_Types>>
+    : T extends "forgetPassword"
+      ? React.Dispatch<React.SetStateAction<Forget_Password_Types>>
+      : never;
+
+interface VerificationEmailComponentProps<T extends AuthTypes = "register"> {
+  email: string;
+  type: string;
+  authType: T;
+  setView: SetViewTypes<T>;
+}
+
+const VerificationEmailComponent = <T extends AuthTypes = "register">({
   email,
   type,
   setView,
-}: {
-  darkMode: boolean;
-  email: string;
-  type: string;
-  setView: React.Dispatch<React.SetStateAction<Register_Interface_Types>>;
-}) => {
+  authType = "register" as T,
+}: VerificationEmailComponentProps<T>) => {
+  const darkMode = useSelector((state: any) => state.theme?.darkTheme);
   const [otp, setOtp] = useState<string>("");
   const [codeChecked, setCodeChecked] = useState<boolean>(false);
   const [inputs, setInputs] = useState<string[]>(new Array(4).fill(""));
   const [count, setCount] = useState<number>(60);
   const [requestResendCode, setRequestResendCode] = useState<boolean>(false);
-  const [requestProceed, setRequestProceed] = useState<boolean>(false);
-  const [registeredSuccess, setRegisteredSuccess] = useState<boolean>(false);
+  const [verifyOtp, { isLoading, isSuccess: codeVerificationSuccess }] =
+    useVerifyOtpMutation();
+  const [
+    reRequestOtp,
+    { isLoading: requestOtpProcessing, isSuccess: otpRequestSuccess },
+  ] = useOtpRequestMutation();
+  const [messageHandlerMessage, setMessageHandlerMessage] =
+    useState<string>("");
   //   Refrence Input Object
   const refInputs: { [key: string]: TextInput | null } = {};
   const handleChangeText = (input: string, index: number) => {
@@ -82,31 +108,36 @@ const VerificationEmailComponent = ({
   }, [requestResendCode]);
 
   const verifyCode = async () => {
-    setRequestProceed(true);
     try {
-      const apiResponse = await axios.post(
-        "https://chat-app-server-drab.vercel.app/api/user/verifyCode",
-        {
-          email: email,
-          code: otp,
-          type: type,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(apiResponse.data);
-      if (apiResponse.status === 200) {
-        setRegisteredSuccess(true);
-        // Yahin se naviagte krna hai
+      const apiResponse = await verifyOtp({
+        email: email,
+        code: otp,
+        type: type,
+      }).unwrap();
+
+      console.log("Api ==>", apiResponse);
+      if (authType === "register") {
+        setMessageHandlerMessage("Registered Successfully");
+        (
+          setView as React.Dispatch<
+            React.SetStateAction<Register_Interface_Types>
+          >
+        )(Register_Interface_Types.register_interface);
+      } else if (authType === "login") {
+        setMessageHandlerMessage("Logged In Successfully");
+        (
+          setView as React.Dispatch<React.SetStateAction<Login_Interface_Types>>
+        )(Login_Interface_Types.login_interface);
+      } else if (authType === "forgetPassword") {
+        setMessageHandlerMessage("Verified Successfully");
+        (
+          setView as React.Dispatch<React.SetStateAction<Forget_Password_Types>>
+        )(Forget_Password_Types.reset_password);
       }
     } catch (error: any) {
-      console.log("Status:", error.response?.status);
-      console.log("Message:", error.response?.data);
+      setMessageHandlerMessage(error?.message);
+      console.log(error);
     } finally {
-      setRequestProceed(false);
       setInputs(new Array(4).fill(""));
       setTimeout(() => {
         refInputs["input-0"]?.focus();
@@ -116,25 +147,16 @@ const VerificationEmailComponent = ({
 
   const askNewCode = async () => {
     try {
-      const makeRequestForCode = await axios.post(
-        "https://chat-app-server-drab.vercel.app/api/user/sentCode",
-        {
-          email: email,
-          type: type,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(makeRequestForCode.data);
+      await reRequestOtp({
+        email: email,
+      }).unwrap();
+      setMessageHandlerMessage("New Code Sent Successfully");
     } catch (error: any) {
-      console.log("Status:", error.response?.status);
-      console.log("Message:", error.response?.data);
+      setMessageHandlerMessage(error?.message);
+    } finally {
+      setCount(60);
+      setRequestResendCode(false);
     }
-    setCount(60);
-    setRequestResendCode(false);
   };
   return (
     <>
@@ -192,8 +214,8 @@ const VerificationEmailComponent = ({
           <TouchableOpacity
             className={`w-[100%] items-center justify-center p-[14px] ${
               !codeChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
-            } rounded-[12px] ${requestProceed ? "opacity-30" : "opacity-100"}`}
-            disabled={!codeChecked || requestProceed}
+            } rounded-[12px] ${isLoading || requestOtpProcessing ? "opacity-30" : "opacity-100"}`}
+            disabled={!codeChecked || isLoading || requestOtpProcessing}
             onPress={verifyCode}
           >
             <Text
@@ -204,19 +226,21 @@ const VerificationEmailComponent = ({
                 fontFamily: "RobotoBold",
               }}
             >
-              {requestProceed ? "Verifying..." : "Verify"}
+              {isLoading ? "Verifying..." : "Verify"}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {requestProceed && (
+      {(isLoading || requestOtpProcessing) && (
         <View className="absolute top-0 left-0 w-[100%] h-[100%]">
-          <Loading text="Verifying..." />
+          <Loading
+            text={!requestOtpProcessing ? "Verifying..." : "Sending..."}
+          />
         </View>
       )}
 
-      {registeredSuccess && (
+      {(codeVerificationSuccess || otpRequestSuccess) && (
         <View
           className="w-[100%] items-center justify-center"
           style={{
@@ -224,7 +248,7 @@ const VerificationEmailComponent = ({
             bottom: 40,
           }}
         >
-          <MessageHandler message="Registered successfully" />
+          <MessageHandler message={messageHandlerMessage} />
         </View>
       )}
     </>

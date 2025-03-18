@@ -53,6 +53,7 @@ const ResetPasswordComponent = ({
         router.replace("/Login");
       }
     } catch (error: any) {
+      console.log(error);
       if (
         error?.message ==
         "New Password cannot be the same as the previous password"
@@ -126,8 +127,6 @@ const ResetPasswordComponent = ({
                 },
               }}
               onChangeValue={(value) => {
-                console.log("Value===>", value);
-                console.log("Password===>", password);
                 if (value != password) {
                   methods.setError("confirmPassword", {
                     message: "Confirm password must match original password",

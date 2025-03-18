@@ -9,11 +9,14 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = AsyncStorage.getItem("token");
+  async (config) => {
+    const token = await AsyncStorage.getItem("token");
     if (token) {
+      console.log("Token Configured", token);
+
       config.headers.Authorization = `${token}`;
     }
+    console.log("request config", config);
     return config;
   },
   (error) => {

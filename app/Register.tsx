@@ -13,94 +13,60 @@ import { Register_Interface_Types } from "@/types/registerInterface.types";
 import VerificationEmailComponent from "@/customComponents/VerificationEmailComponent/VerificationEmailComponent";
 import "@/global.css";
 import Loading from "@/customComponents/Loading/Loading";
+import { FormProvider, useForm } from "react-hook-form";
+import TextInputField from "./components/global/TextInputField";
+import {
+  useOtpRequestMutation,
+  useRegisterMutation,
+} from "@/Utils/redux/apiQuery/authApi";
 
 const Register = () => {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-  const selector = useSelector((state: any) => state.theme);
+  const darkMode = useSelector((state: any) => state.theme?.darkTheme);
   const [view, setView] = useState<Register_Interface_Types>(
     Register_Interface_Types.register_interface
   );
-  const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
-  const [userPassword, setUserPassword] = useState<string>("");
-  const [seePassword, setSeePassword] = useState<boolean>(true);
   const [allChecked, setAllChecked] = useState<boolean>(false);
-  const [userNameError, setUserNameError] = useState<string>("");
-  const [userEmailError, setUserEmailError] = useState<string>("");
-  const [userPasswordError, setUserPasswordError] = useState<string>("");
-  const [requestProceed, setRequestProceed] = useState<boolean>(false);
+  const [register, { isLoading, isSuccess }] = useRegisterMutation();
+  const [requestCode, { isLoading: codeRequestProcessing }] =
+    useOtpRequestMutation();
   const type = "email_verification";
 
-  useEffect(() => {
-    const { darkTheme } = selector;
-    if (darkTheme) {
-      setDarkMode(true);
-    } else {
-      setDarkMode(false);
-    }
-  }, [selector]);
+  const methods = useForm({
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
 
+  const name = methods.watch("username");
+  const email = methods.watch("email");
+  const password = methods.watch("password");
+  const isValid = methods.formState.isValid;
+
+  // Check Mark
   useEffect(() => {
-    if (userName && userEmail && userPassword) {
-      if (!userNameError && !userEmailError && !userPasswordError) {
-        setAllChecked(true);
-      } else {
-        setAllChecked(false);
-      }
+    if (name && email && password && isValid) {
+      setAllChecked(true);
     } else {
       setAllChecked(false);
     }
-  }, [userNameError, userEmailError, userPasswordError]);
+  }, [name, email, password, isValid]);
 
-  // Sbmit Info Controller
-  const submitInfo = async () => {
-    const userData = {
-      username: userName,
-      email: userEmail,
-      password: userPassword,
-    };
-    setRequestProceed(true);
+  const onSubmit = async (data: any) => {
     try {
-      const apiResponse = await axios.post(
-        "https://chat-app-server-drab.vercel.app/api/user/register",
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log(apiResponse.status);
-      console.log(apiResponse.data);
-      if (apiResponse.status === 201) {
-        const makeRequestForCode = await axios.post(
-          "https://chat-app-server-drab.vercel.app/api/user/sentCode",
-          {
-            email: userEmail,
-            type: type,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+      const apiResponse = await register(data).unwrap();
+      if (apiResponse?.message == "Please check your email for verification") {
         setView(Register_Interface_Types.verification_interface);
       }
     } catch (error: any) {
-      console.log("Status:", error);
-      console.log("Message:", error.response?.data);
-      if (error.response?.data.message === "User name already taken") {
-        setUserNameError("Username already exists");
-      } else if (error.response?.data.message === "Email already taken") {
-        setUserEmailError("Email already exists");
-      } else {
-        setUserNameError("");
-        setUserEmailError("");
+      if (error?.message == "Email already taken") {
+        methods.setError("email", { message: "Email already exists" });
+      } else if (error?.message == "User name already taken") {
+        methods.setError("username", { message: "Name already exists" });
       }
-    } finally {
-      setRequestProceed(false);
     }
   };
 
@@ -156,160 +122,50 @@ const Register = () => {
               }}
               className="flex-[1.5]"
             >
-              <View className="w-[100%] gap-[5px]">
-                <Text
-                  className={`text-[15px] ${
-                    darkMode
-                      ? userNameError
-                        ? "text-[#ff0000]"
-                        : "text-[#7decc7]"
-                      : userNameError
-                      ? "text-[#ff0000]"
-                      : "text-[#1f8a66]"
-                  } w-[100%]`}
-                  style={{
-                    fontFamily: "RobotoBold",
-                  }}
-                >
-                  Your Name
-                </Text>
-                <TextInput
-                  className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
-                    darkMode ? "text-[#fff]" : "text-[#000]"
-                  } font-semibold ${
-                    darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-                  } border-b-[1px] ${
-                    darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
-                  } ${userNameError && "border-b-[#ff0000]"}`}
-                  value={userName}
-                  onChangeText={(text: string) => {
-                    setUserNameError("");
-                    setUserName(text);
-                  }}
-                />
-                {userNameError && (
-                  <Text className="text-[12px] text-[#ff0000]">
-                    {userNameError}
-                  </Text>
-                )}
-              </View>
-              <View className="w-[100%] gap-[5px]">
-                <Text
-                  className={`text-[15px] ${
-                    darkMode
-                      ? userEmailError
-                        ? "text-[#ff0000]"
-                        : "text-[#7decc7]"
-                      : userEmailError
-                      ? "text-[#ff0000]"
-                      : "text-[#1f8a66]"
-                  } w-[100%] ${userEmailError && "border-b-[#ff0000]"}`}
-                  style={{
-                    fontFamily: "RobotoBold",
-                  }}
-                >
-                  Your Email
-                </Text>
-                <TextInput
-                  className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
-                    darkMode ? "text-[#fff]" : "text-[#000]"
-                  } font-semibold ${
-                    darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-                  } border-b-[1px] ${
-                    darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
-                  } ${userEmailError && "border-b-[#ff0000]"}`}
-                  value={userEmail}
-                  onChangeText={(event) => {
-                    const currentEmail = event.valueOf();
-                    setUserEmail(currentEmail);
-
-                    if (
-                      !currentEmail.includes("@") ||
-                      !currentEmail.includes(".com")
-                    ) {
-                      setUserEmailError(
-                        "Your email should be in the format of abc@example.com"
-                      );
-                    } else {
-                      setUserEmailError("");
-                    }
-                  }}
-                />
-                {userEmailError && (
-                  <Text className="text-[12px] text-[#ff0000]">
-                    {userEmailError}
-                  </Text>
-                )}
-              </View>
-              <View className="w-[100%] gap-[5px]">
-                <Text
-                  className={`text-[15px] ${
-                    darkMode
-                      ? userPasswordError
-                        ? "text-[#ff0000]"
-                        : "text-[#7decc7]"
-                      : userPasswordError
-                      ? "text-[#ff0000]"
-                      : "text-[#1f8a66]"
-                  } w-[100%]`}
-                  style={{
-                    fontFamily: "RobotoBold",
-                  }}
-                >
-                  Set Password
-                </Text>
-                <View
-                  className={`w-[100%] flex-row items-center justify-between border-b-[1px] pr-9 ${
-                    darkMode ? "border-b-[#7decc7]" : "border-b-[#1f8a66]"
-                  } ${userPasswordError && "border-b-[#ff0000]"}`}
-                >
-                  <TextInput
-                    className={`w-[100%] h-[40px] rounded-[2px] px-1 text-[16px] ${
-                      darkMode ? "text-[#fff]" : "text-[#000]"
-                    } font-semibold ${
-                      darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-                    }`}
-                    value={userPassword}
-                    secureTextEntry={seePassword}
-                    onChangeText={(event) => {
-                      const currentPassword = event.valueOf();
-                      setUserPassword(currentPassword);
-                      if (currentPassword?.length < 8) {
-                        setUserPasswordError(
-                          "Password must be at least 8 characters long"
-                        );
-                      } else {
-                        setUserPasswordError("");
-                      }
-                    }}
-                  />
-                  <View
-                    className={`pl-3 border-l-[1px] ${
-                      darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
-                    }`}
-                    onTouchEnd={() => setSeePassword(!seePassword)}
-                  >
-                    {!seePassword ? (
-                      <Feather
-                        name="eye-off"
-                        size={18}
-                        color={darkMode ? "#6e6e6d" : "#4b4a4a"}
-                      />
-                    ) : (
-                      <Feather
-                        name="eye"
-                        size={18}
-                        color={darkMode ? "#6e6e6d" : "#4b4a4a"}
-                      />
-                    )}
-                  </View>
-                </View>
-                {userPasswordError && (
-                  <Text className="text-[12px] text-[#ff0000]">
-                    {userPasswordError}
-                  </Text>
-                )}
-              </View>
+              {/* Name Input  */}
+              <TextInputField
+                label="Your Name"
+                name="username"
+                secureTextEntry={false}
+                rules={{
+                  required: "Name is required",
+                }}
+                type="text"
+              />
+              {/* Email Input  */}
+              <TextInputField
+                label="Your Email"
+                name="email"
+                secureTextEntry={false}
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message:
+                      "Your email should be in the format of abc@example.com",
+                  },
+                }}
+                onChangeValue={(text: string) => {
+                  setUserEmail(text);
+                }}
+                type="email"
+              />
+              {/* Password Input  */}
+              <TextInputField
+                name="password"
+                label="Your Password"
+                secureTextEntry={true}
+                required={true}
+                validationError="Password is required"
+                rules={{
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                }}
+                type="password"
+              />
             </ScrollView>
             {/* Footer Buttons  */}
             <View className="w-[100%] px-4 gap-[15px] pb-4">
@@ -317,8 +173,8 @@ const Register = () => {
                 className={`w-[100%] items-center justify-center p-[14px] ${
                   !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
                 } rounded-[12px]`}
-                disabled={!allChecked || requestProceed}
-                onPress={submitInfo}
+                disabled={!allChecked || isLoading}
+                onPress={methods.handleSubmit(onSubmit)}
               >
                 <Text
                   className={`text-[16px] ${
@@ -328,7 +184,7 @@ const Register = () => {
                     fontFamily: "RobotoBold",
                   }}
                 >
-                  {requestProceed ? "Creating..." : "Create an account"}
+                  {isLoading ? "Creating..." : "Create an account"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -377,8 +233,8 @@ const Register = () => {
             <VerificationEmailComponent
               email={userEmail}
               type={type}
-              darkMode={darkMode}
               setView={setView}
+              authType="register"
             />
           </View>
         );
@@ -386,12 +242,14 @@ const Register = () => {
   };
   return (
     <>
-      <View className={`flex-1`}>{renderedContent()}</View>
-      {requestProceed && (
-        <View className="absolute top-0 left-0 w-[100%] h-[100%]">
-          <Loading text="Creating account..." />
-        </View>
-      )}
+      <FormProvider {...methods}>
+        <View className={`flex-1`}>{renderedContent()}</View>
+        {isLoading && (
+          <View className="absolute top-0 left-0 w-[100%] h-[100%]">
+            <Loading text="Creating account..." />
+          </View>
+        )}
+      </FormProvider>
     </>
   );
 };

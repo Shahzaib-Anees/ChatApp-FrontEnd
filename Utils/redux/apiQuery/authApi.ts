@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../../axiosConfigs/axios.instance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const authApi = createApi({
   reducerPath: "authApi",
@@ -11,13 +12,21 @@ const authApi = createApi({
         method: "POST",
         data: { email, password },
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        console.log("User Data ==>", data);
+      },
     }),
     register: builder.mutation({
-      query: ({ name, email, password }) => ({
+      query: ({ username, email, password }) => ({
         url: "user/register",
         method: "POST",
-        data: { name, email, password },
+        data: { username, email, password },
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        console.log("User Data ==>", data);
+      },
     }),
     resetPassword: builder.mutation({
       query: ({ email, password }) => ({
@@ -32,10 +41,17 @@ const authApi = createApi({
         method: "POST",
         data: { email, code, type },
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        const token = data?.accessToken;
+        console.log("Token ==>", token);
+
+        await AsyncStorage.setItem("token", token);
+      },
     }),
     otpRequest: builder.mutation({
       query: ({ email, type }) => ({
-        url: "user/sentCode",
+        url: "user/requestCode",
         method: "POST",
         data: { email, type },
       }),

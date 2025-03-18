@@ -2,14 +2,17 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Forget_Password_Types } from "@/types/forgetPassword.types";
 import { useSelector } from "react-redux";
-import VerificationCodeComponent from "@/customComponents/VerificationCodeComponent/VerificationCodeComponent";
 import ResetPasswordComponent from "@/customComponents/ResetPasswordComponent/ResetPasswordComponent";
 import axios from "axios";
 import Loading from "@/customComponents/Loading/Loading";
 import { FormProvider, useForm } from "react-hook-form";
 import TextInputField from "./components/global/TextInputField";
-import { useOtpRequestMutation } from "@/Utils/redux/apiQuery/authApi";
+import {
+  useOtpRequestMutation,
+  useVerifyOtpMutation,
+} from "@/Utils/redux/apiQuery/authApi";
 import MessageHandler from "@/customComponents/MessageHandler/MessageHandler";
+import VerificationEmailComponent from "@/customComponents/VerificationEmailComponent/VerificationEmailComponent";
 
 const forgetPassword = () => {
   const [userEmail, setUserEmail] = useState<string>("");
@@ -48,9 +51,7 @@ const forgetPassword = () => {
         email: data?.email,
         type: type,
       }).unwrap();
-      if (apiResponse?.message === "Email sent") {
-        setView(Forget_Password_Types.code_interface);
-      }
+      setView(Forget_Password_Types.code_interface);
     } catch (error: any) {
       if (error?.message === "No account found with this email") {
         methods.setError("email", {
@@ -158,11 +159,11 @@ const forgetPassword = () => {
                 enter 5 digit code that is mentioned in the email.
               </Text>
             </View>
-            <VerificationCodeComponent
+            <VerificationEmailComponent
+              authType="forgetPassword"
               email={userEmail}
-              type={type}
-              darkMode={darkMode}
               setView={setView}
+              type={"code_verification"}
             />
           </View>
         );
