@@ -1,12 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme } from "@/Utils/redux/reducers/theme.slice";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import "@/global.css";
 import {
@@ -50,15 +57,15 @@ export default function App() {
         await Font.loadAsync(Entypo.font);
         await new Promise((resolve) => setTimeout(resolve, 2000));
         const themeMode = await AsyncStorage.getItem("themeMode");
-        if (themeMode !== null) {
-          if (themeMode === "dark") {
-            dispatch(setTheme({ darkMode: true }));
-          } else {
-            dispatch(setTheme({ darkMode: false }));
-          }
-        } else {
-          dispatch(setTheme({ darkMode: false }));
-        }
+        // if (themeMode !== null) {
+        //   if (themeMode === "dark") {
+        //     dispatch(setTheme({ darkMode: true }));
+        //   } else {
+        //     dispatch(setTheme({ darkMode: false }));
+        //   }
+        // } else {
+        //   dispatch(setTheme({ darkMode: false }));
+        // }
       } catch (e) {
         console.warn(e);
       } finally {
@@ -71,12 +78,12 @@ export default function App() {
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
-      await SplashScreen.hideAsync();
       if (isAuthenticated) {
-        console.log("Authenticated");
+        router.replace("/chatsTabs");
       } else {
         console.log("Not Authenticated");
       }
+      await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
 
@@ -92,8 +99,8 @@ export default function App() {
       end={{ x: 0.5, y: 0.8 }}
       style={{ flex: 1 }}
     >
-      <View className="flex-1 items-center gap-2 bg-[rgba(0,0,0,0.4)] p-2">
-        <View className="flex-row items-center justify-center gap-1 my-3">
+      <SafeAreaView className="flex-1 items-center gap-1 bg-[rgba(0,0,0,0.4)] px-3">
+        <View className="flex-row items-center justify-center gap-1 mt-[35px]">
           <Text
             className="text-[#fff] text-[40px]"
             style={{
@@ -147,7 +154,7 @@ export default function App() {
             </Link>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 }

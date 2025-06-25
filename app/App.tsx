@@ -1,24 +1,42 @@
 import MessageHandler from "@/customComponents/MessageHandler/MessageHandler";
 import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { io, Socket } from "socket.io-client";
+import Register from "./Register";
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-  const selector = useSelector((state: any) => state.theme);
+  const darkMode = useSelector((state: any) => state.theme?.darkTheme);
   const messageHandlerState = useSelector(
     (state: any) => state?.messageHandler?.called
   );
 
+  const [messages, setMessages] = useState<string[]>([]);
+  const socketRef = useRef<Socket | null>(null);
+
   useEffect(() => {
-    const { darkTheme } = selector;
-    if (darkTheme) {
-      setDarkMode(true);
-    } else {
-      setDarkMode(false);
-    }
-  }, [selector]);
+    console.log("Dark Mode:", darkMode);
+    socketRef.current = io("http://192.168.0.177:3000");
+    socketRef.current.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    socketRef.current.on("message", (message) => {
+      console.log("Message received:", message);
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    socketRef.current.on("connect_error", (error) => {
+      console.error("Connection error:", error);
+    });
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
+
   return (
     <>
       <Stack>
@@ -69,6 +87,17 @@ export default function App() {
             },
             headerTitle: "Forgot Password",
             headerTintColor: darkMode ? "#fff" : "#000",
+            statusBarStyle: darkMode ? "light" : "dark",
+            statusBarBackgroundColor: darkMode ? "#111111" : "#fff",
+            contentStyle: {
+              backgroundColor: darkMode ? "#111111" : "#fff",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="chatsTabs"
+          options={{
+            headerShown: false,
             statusBarStyle: darkMode ? "light" : "dark",
             statusBarBackgroundColor: darkMode ? "#111111" : "#fff",
             contentStyle: {

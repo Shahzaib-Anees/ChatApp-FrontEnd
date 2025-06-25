@@ -15,6 +15,7 @@ const authApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         console.log("User Data ==>", data);
+        // Add user data to global state
       },
     }),
     register: builder.mutation({
@@ -27,6 +28,12 @@ const authApi = createApi({
         const { data } = await queryFulfilled;
         console.log("User Data ==>", data);
       },
+    }),
+    getUserDetails: builder.mutation({
+      query: () => ({
+        url: "user/userDetails",
+        method: "GET",
+      }),
     }),
     resetPassword: builder.mutation({
       query: ({ email, password }) => ({
@@ -44,8 +51,6 @@ const authApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         const token = data?.accessToken;
-        console.log("Token ==>", token);
-
         await AsyncStorage.setItem("token", token);
       },
     }),
@@ -65,6 +70,7 @@ const {
   useResetPasswordMutation,
   useVerifyOtpMutation,
   useOtpRequestMutation,
+  useGetUserDetailsMutation,
 } = authApi;
 
 export {
@@ -74,4 +80,5 @@ export {
   useResetPasswordMutation,
   useVerifyOtpMutation,
   useOtpRequestMutation,
+  useGetUserDetailsMutation,
 };

@@ -19,6 +19,7 @@ import {
   useOtpRequestMutation,
   useRegisterMutation,
 } from "@/Utils/redux/apiQuery/authApi";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Register = () => {
   const darkMode = useSelector((state: any) => state.theme?.darkTheme);
@@ -75,7 +76,7 @@ const Register = () => {
       case Register_Interface_Types.register_interface:
         return (
           <View className="flex-1">
-            <View className="flex-[0.3] items-center justify-center w-[100%] py-4 px-4 gap-4 my-[30px]">
+            <View className="flex-[0.3] items-center justify-center w-[100%] py-4 pt-0 px-4 gap-4 ">
               <View className="flex-row items-center justify-center gap-2">
                 <Text
                   className={`${
@@ -117,7 +118,7 @@ const Register = () => {
               contentContainerStyle={{
                 alignItems: "center",
                 gap: 50,
-                marginTop: 2,
+                marginTop: 20,
                 paddingHorizontal: 24,
               }}
               className="flex-[1.5]"
@@ -243,7 +244,7 @@ const Register = () => {
   return (
     <>
       <FormProvider {...methods}>
-        <View className={`flex-1`}>{renderedContent()}</View>
+        <SafeAreaView className="flex-1">{renderedContent()}</SafeAreaView>
         {isLoading && (
           <View className="absolute top-0 left-0 w-[100%] h-[100%]">
             <Loading text="Creating account..." />

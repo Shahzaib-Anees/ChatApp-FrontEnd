@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Feather from "@expo/vector-icons/Feather";
 
 const TextInputField = ({
-  label,
+  label = "",
   name,
   secureTextEntry = false,
   required = false,
@@ -14,7 +14,7 @@ const TextInputField = ({
   type = "text",
   rules = {},
 }: {
-  label: string;
+  label?: string;
   name: string;
   secureTextEntry?: boolean;
   required?: boolean;

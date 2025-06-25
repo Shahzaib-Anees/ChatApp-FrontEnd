@@ -9,6 +9,7 @@ import TextInputField from "./components/global/TextInputField";
 import { FormProvider, useForm } from "react-hook-form";
 import { Login_Interface_Types } from "@/types/loginInterface.types";
 import VerificationEmailComponent from "@/customComponents/VerificationEmailComponent/VerificationEmailComponent";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Login = () => {
   const [view, setView] = useState<Login_Interface_Types>(
@@ -62,7 +63,7 @@ const Login = () => {
         return (
           <View className={`flex-1`}>
             {/* header text  */}
-            <View className="flex-[0.5] items-center justify-center w-[100%] py-4 px-4 gap-4 mt-[20px]">
+            <View className="flex-[0.5] items-center justify-center w-[100%] py-4 pt-0 px-4 gap-4">
               <View className="flex-row items-center justify-center gap-2">
                 <View className="relative items-center justify-center">
                   <Text
@@ -228,7 +229,9 @@ const Login = () => {
   return (
     <>
       <FormProvider {...methods}>
-        <View className={`flex-1`}>{renderedContent()}</View>
+        <SafeAreaView className="flex-1">
+          {renderedContent()}
+        </SafeAreaView> 
       </FormProvider>
       {isLoading && (
         <View className="absolute top-0 left-0 w-[100%] h-[100%]">
