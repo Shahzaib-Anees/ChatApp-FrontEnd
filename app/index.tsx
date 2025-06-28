@@ -27,6 +27,8 @@ import {
   Poppins_700Bold,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
+import { checkUserAuthentication } from "@/Utils/methods/methods";
+import { useGetUserDetailsMutation } from "@/Utils/redux/apiQuery/authApi";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -38,8 +40,9 @@ import {
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const selector = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
-  const { info, isAuthenticated } = selector;
+  const [fetchUserDetails] = useGetUserDetailsMutation();
+  // const dispatch = useDispatch();
+  const { info } = selector;
 
   const [fontsLoaded, fontError] = useFonts({
     PermanentMarker: PermanentMarker_400Regular,
@@ -56,6 +59,7 @@ export default function App() {
         await SplashScreen.preventAutoHideAsync();
         await Font.loadAsync(Entypo.font);
         await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Theme checking
         const themeMode = await AsyncStorage.getItem("themeMode");
         // if (themeMode !== null) {
         //   if (themeMode === "dark") {
@@ -78,7 +82,10 @@ export default function App() {
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
+      const isAuthenticated = await checkUserAuthentication();
       if (isAuthenticated) {
+        console.log("Authenticated");
+        await fetchUserDetails(null);
         router.replace("/chatsTabs");
       } else {
         console.log("Not Authenticated");

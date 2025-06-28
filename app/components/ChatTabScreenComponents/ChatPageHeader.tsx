@@ -6,16 +6,21 @@ import {
   TextInput,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatPageHeaderInterface } from "@/types/chatPageHeader.types";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import TextInputField from "../global/TextInputField";
+import ChatPageHamMenu from "./ChatPageHamMenu";
+import { Modal } from "react-native";
 
 const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
   const [view, setView] = useState<ChatPageHeaderInterface>(
     ChatPageHeaderInterface.header_interface
   );
+
+  const [openSideHamMenu, setOpenSideHamMenu] = useState<boolean>(false);
+  useEffect(() => {});
   const renderedContent = () => {
     switch (view) {
       case ChatPageHeaderInterface.search_bar_interface:
@@ -48,7 +53,7 @@ const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
         );
       default:
         return (
-          <View className="flex-row items-center justify-between py-1 px-5">
+          <View className="flex-row items-center justify-between py-1 px-4">
             <TouchableOpacity
               className={`p-2 ${!darkMode ? "bg-[#ececeb]" : "border-[1px] border-[#636262]"}  rounded-full`}
               onPress={() =>
@@ -66,14 +71,18 @@ const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
             >
               Home
             </Text>
-            <View className={`rounded-full`}>
+            <View
+              className={`rounded-full relative`}
+              onTouchEnd={() => setOpenSideHamMenu(!openSideHamMenu)}
+            >
               <Image
                 source={{
                   uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D",
                 }}
                 resizeMode="cover"
-                style={{ width: 40, height: 40 , borderRadius : 50 }}
+                style={{ width: 40, height: 40, borderRadius: 50 }}
               />
+              {openSideHamMenu && <ChatPageHamMenu darkMode={darkMode} />}
             </View>
           </View>
         );

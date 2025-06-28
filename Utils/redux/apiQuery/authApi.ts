@@ -1,6 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../../axiosConfigs/axios.instance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setDataInUserState } from "../reducers/user.slice";
+import { jwtDecode } from "jwt-decode";
 
 const authApi = createApi({
   reducerPath: "authApi",
@@ -34,6 +36,15 @@ const authApi = createApi({
         url: "user/userDetails",
         method: "GET",
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setDataInUserState({ name: "info", data: data?.data }));
+          dispatch(setDataInUserState({ name: "uid", data: data?.data?._id }));
+        } catch (error) {
+          console.log("Error fetching user details:", error);
+        }
+      },
     }),
     resetPassword: builder.mutation({
       query: ({ email, password }) => ({
@@ -48,10 +59,40 @@ const authApi = createApi({
         method: "POST",
         data: { email, code, type },
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
-        const token = data?.accessToken;
-        await AsyncStorage.setItem("token", token);
+        const accesstoken = data?.data?.accessToken;
+        const decodedAccesstoken = jwtDecode(accesstoken);
+        const userAccessToken: {
+          token: string;
+          expiresAt: number | undefined;
+        } = {
+          token: accesstoken,
+          expiresAt: decodedAccesstoken?.exp
+            ? decodedAccesstoken?.exp * 1000
+            : undefined,
+        };
+
+        const refreshToken = data?.data?.refreshToken;
+        const decodedrefreshtoken = jwtDecode(refreshToken);
+        const userRefreshToken: {
+          token: string;
+          expiresAt: number | undefined;
+        } = {
+          token: refreshToken,
+          expiresAt: decodedrefreshtoken?.exp
+            ? decodedrefreshtoken?.exp * 1000
+            : undefined,
+        };
+
+        await AsyncStorage.setItem(
+          "accessToken",
+          JSON.stringify(userAccessToken)
+        );
+        await AsyncStorage.setItem(
+          "refreshToken",
+          JSON.stringify(userRefreshToken)
+        );
       },
     }),
     otpRequest: builder.mutation({
@@ -59,6 +100,13 @@ const authApi = createApi({
         url: "user/requestCode",
         method: "POST",
         data: { email, type },
+      }),
+    }),
+    refetchAccessToken: builder.mutation({
+      query: ({ refreshToken }) => ({
+        url: "user/refreshToken",
+        method: "POST",
+        data: { refreshToken },
       }),
     }),
   }),
@@ -71,6 +119,7 @@ const {
   useVerifyOtpMutation,
   useOtpRequestMutation,
   useGetUserDetailsMutation,
+  useRefetchAccessTokenMutation,
 } = authApi;
 
 export {
@@ -81,4 +130,5 @@ export {
   useVerifyOtpMutation,
   useOtpRequestMutation,
   useGetUserDetailsMutation,
+  useRefetchAccessTokenMutation,
 };

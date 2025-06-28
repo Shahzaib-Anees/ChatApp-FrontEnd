@@ -1,8 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AxiosRequestConfig, AxiosError } from "axios";
+
+const production = false;
+const environments = {
+  development: {
+    baseURL: "http://192.168.0.177:3000/api/",
+  },
+  production: {
+    baseURL: "https://chat-app-server-drab.vercel.app/api/",
+  },
+};
 const axiosInstance = axios.create({
-  baseURL: "https://chat-app-server-drab.vercel.app/api/",
+  baseURL: production
+    ? environments.production.baseURL
+    : environments.development.baseURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -10,13 +22,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem("accessToken");
     if (token) {
-      console.log("Token Configured", token);
-
-      config.headers.Authorization = `${token}`;
+      const parsedToken = JSON.parse(token);
+      config.headers.Authorization = `${parsedToken?.token}`;
     }
-    console.log("request config", config);
     return config;
   },
   (error) => {

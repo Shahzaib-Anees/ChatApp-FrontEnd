@@ -1,0 +1,80 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authApi } from "../redux/apiQuery/authApi";
+import store from "../redux/store/store";
+import { jwtDecode } from "jwt-decode";
+
+// Function to fetch new access token from server
+const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
+  try {
+    const apiResponse = await store
+      .dispatch(
+        authApi.endpoints.refetchAccessToken.initiate({
+          refreshToken: refreshToken,
+        })
+      )
+      .unwrap();
+    const data = apiResponse?.data;
+    const accesstoken = data?.accessToken;
+    const decodedAccesstoken = jwtDecode(accesstoken);
+    const userAccessToken: {
+      token: string;
+      expiresAt: number | undefined;
+    } = {
+      token: accesstoken,
+      expiresAt: decodedAccesstoken?.exp
+        ? decodedAccesstoken?.exp * 1000
+        : undefined,
+    };
+
+    await AsyncStorage.setItem("accessToken", JSON.stringify(userAccessToken));
+    return true;
+  } catch (error) {
+    console.log("Error fetching new access token:", error);
+    return false;
+  }
+};
+
+// Check User Authentication
+const checkUserAuthentication = async () => {
+  const accessToken = await AsyncStorage.getItem("accessToken");
+  const refreshToken = await AsyncStorage.getItem("refreshToken");
+  if (accessToken !== null) {
+    const parsedAccessToken = JSON.parse(accessToken);
+    console.log("parsedAccessToken", parsedAccessToken);
+    // Check If Access Token is Expired
+    console.log(typeof parsedAccessToken?.expiresAt);
+    if (parsedAccessToken?.expiresAt < Date.now()) {
+      console.log("accessToken expired! checking refreshToken");
+      // Refresh Token checking if access token is expired
+      if (refreshToken !== null) {
+        const parsedRefreshToken = JSON.parse(refreshToken);
+        // If access token is expired, check if refresh token is expired
+        if (parsedRefreshToken?.expiresAt < Date.now()) {
+          console.log("refreshToken expired");
+          // if refreshToken expired return false
+          return false;
+        } else {
+          // if refreshToken is not expired, fetch new access token from server and return true
+          const isRefreshedAccessToken = await fetchNewAccessTokenFromServer(
+            parsedRefreshToken?.token
+          );
+          if (isRefreshedAccessToken) {
+            return true;
+          }
+        }
+      }
+      // if accessToken is expired and refreshToken is null, return false
+      console.log("accessToken expired");
+      return false;
+    } else {
+      // If access token is not expired, return true
+      console.log("accessToken verified");
+      return true;
+    }
+  } else {
+    // if accessToken is null, return false
+    return false;
+  }
+};
+
+export { checkUserAuthentication };
