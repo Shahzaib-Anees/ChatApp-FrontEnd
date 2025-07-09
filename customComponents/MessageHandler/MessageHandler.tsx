@@ -55,7 +55,7 @@ const MessageHandler = ({
         style={{
           fontFamily: "PermanentMarker",
           fontSize: 30,
-          color: "#1f8a66",
+          color: "darkGreen",
         }}
       >
         C

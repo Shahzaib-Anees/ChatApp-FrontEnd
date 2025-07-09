@@ -13,6 +13,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import TextInputField from "../global/TextInputField";
 import ChatPageHamMenu from "./ChatPageHamMenu";
 import { Modal } from "react-native";
+import colors from "@/Utils/colors/colorVariables";
 
 const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
   const [view, setView] = useState<ChatPageHeaderInterface>(
@@ -44,8 +45,8 @@ const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
                 placeholder="Search"
                 className={`w-[100%] text-[17px] ${
                   darkMode
-                    ? "caret-[#7decc7]  text-[#c6c5c4] placeholder:text-[#6b6b6b]"
-                    : "caret-[#1f8a66] text-[#000] placeholder:text-[#6b6b6b]"
+                    ? "caret-[var(--light-green)]  text-lighterGrey placeholder:text-[#6b6b6b]"
+                    : "caret-darkGreen text-darkestBlack placeholder:text-[#6b6b6b]"
                 }`}
               />
             </View>
@@ -63,7 +64,7 @@ const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
               <FontAwesome6
                 name="magnifying-glass"
                 size={16}
-                color={`${darkMode ? "#c6c5c4" : "black"}`}
+                color={`${darkMode ? colors.lightestGrey : "black"}`}
               />
             </TouchableOpacity>
             <Text

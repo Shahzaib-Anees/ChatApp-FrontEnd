@@ -7,7 +7,7 @@ const Loading = ({ text }: { text: string }) => {
       className="absolute top-0 left-0 w-[100%] h-[100%] flex items-center justify-center"
       style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
     >
-      <ActivityIndicator size="large" color="#1f8a66" />
+      <ActivityIndicator size="large" color="darkGreen" />
       <Text className="text-[16px] text-[#fff] mt-4">{text}</Text>
     </View>
   );

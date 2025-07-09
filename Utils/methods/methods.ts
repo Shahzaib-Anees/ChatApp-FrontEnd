@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApi } from "../redux/apiQuery/authApi";
 import store from "../redux/store/store";
 import { jwtDecode } from "jwt-decode";
+import * as Contacts from "expo-contacts";
 
 // Function to fetch new access token from server
 const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
@@ -26,8 +27,10 @@ const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
         : undefined,
     };
 
+    console.log("new userAccessToken" , userAccessToken)
+
     await AsyncStorage.setItem("accessToken", JSON.stringify(userAccessToken));
-    return true;
+    return true; 
   } catch (error) {
     console.log("Error fetching new access token:", error);
     return false;
@@ -77,4 +80,33 @@ const checkUserAuthentication = async () => {
   }
 };
 
-export { checkUserAuthentication };
+// Get contacts permsission
+
+async function getContactPermissions() {
+  const { status } = await Contacts.requestPermissionsAsync();
+  if (status === "granted") {
+    console.log("Permission granted!");
+  } else {
+    console.log("Permission denied.");
+  }
+}
+
+async function loadUserContacts() {
+  const { status } = await Contacts.requestPermissionsAsync();
+  if (status === "granted") {
+    let phoneNumbersArray: any[] = [];
+    const { data } = await Contacts.getContactsAsync({
+      fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
+    });
+    data.map((contact: any) => {
+      contact?.phoneNumbers.map((phoneNumber: any) => {
+        phoneNumbersArray.push(phoneNumber?.number);
+      });
+    });
+    console.log(phoneNumbersArray);
+  } else {
+    await getContactPermissions();
+  }
+}
+
+export { checkUserAuthentication, getContactPermissions, loadUserContacts };

@@ -29,6 +29,7 @@ import {
 } from "@expo-google-fonts/poppins";
 import { checkUserAuthentication } from "@/Utils/methods/methods";
 import { useGetUserDetailsMutation } from "@/Utils/redux/apiQuery/authApi";
+// import { useGetUserDetailsMutation } from "@/Utils/redux/apiQuery/authApi";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -85,7 +86,18 @@ export default function App() {
       const isAuthenticated = await checkUserAuthentication();
       if (isAuthenticated) {
         console.log("Authenticated");
-        await fetchUserDetails(null);
+        try {
+          const result = await fetchUserDetails(null);
+
+          // Check if the mutation was successful
+          if ("data" in result) {
+            console.log("User Details Fetched Successfully");
+          } else if ("error" in result) {
+            console.log("API Error fetching user details:", result.error);
+          }
+        } catch (error) {
+          console.log("Exception while fetching user details:", error);
+        }
         router.replace("/chatsTabs");
       } else {
         console.log("Not Authenticated");
@@ -124,7 +136,7 @@ export default function App() {
           <Text className="text-[#fff] text-[87px] font-[400] tracking-wider">
             Connect friends <Text className="font-[900]">easily & quickly</Text>
           </Text>
-          <Text className="text-[#c6c5c4] text-[20px] tracking-wider mt-3 leading-[30px]">
+          <Text className="text-lighterGrey text-[20px] tracking-wider mt-3 leading-[30px]">
             Our chat app is the perfect way to stay connected with friends and
             family.
           </Text>
@@ -132,7 +144,7 @@ export default function App() {
         <View className="w-[100%] items-center justify-center px-4 mt-[15px] ">
           <TouchableOpacity className="w-[100%] bg-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]">
             <Link href={"/Register"} className="w-[100%]">
-              <Text className="text-[#000] text-[18px] font-semibold text-center">
+              <Text className="text-darkestBlack text-[18px] font-semibold text-center">
                 Sign up with email
               </Text>
             </Link>
@@ -140,11 +152,11 @@ export default function App() {
         </View>
         <View className="flex-row items-center justify-center gap-2 w-[100%] px-28 mt-[15px]">
           <View className="w-[100%] h-[1px] bg-[#969594]"></View>
-          <Text className="text-[#c6c5c4] text-[18px] font-semibold">OR</Text>
+          <Text className="text-lighterGrey text-[18px] font-semibold">OR</Text>
           <View className="w-[100%] h-[1px] bg-[#969594]"></View>
         </View>
         <View className="w-[100%] items-center justify-center mt-[10px] px-4 gap-[15px]">
-          <Text className="text-[#c6c5c4] text-[17px] font-semibold tracking-widest">
+          <Text className="text-lighterGrey text-[17px] font-semibold tracking-widest">
             Already have an account ?
           </Text>
           <TouchableOpacity className="w-[100%] border-[1px] border-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]">

@@ -36,10 +36,10 @@ const TextInputField = ({
           darkMode
             ? errors[name]
               ? "text-[#ff0000]"
-              : "text-[#7decc7]"
+              : "text-[var(--light-green)]"
             : errors[name]
               ? "text-[#ff0000]"
-              : "text-[#1f8a66]"
+              : "text-darkGreen"
         } w-[100%]`}
         style={{
           fontFamily: "RobotoBold",
@@ -62,8 +62,8 @@ const TextInputField = ({
                   ? errors[name]?.message
                     ? "border-b-[1px] border-b-[#ff0000]"
                     : darkMode
-                      ? "border-b-[1px] border-b-[#7decc7]"
-                      : "border-b-[1px] border-b-[#1f8a66]"
+                      ? "border-b-[1px] border-b-[var(--light-green)]"
+                      : "border-b-[1px] border-b-darkGreen"
                   : ""
               } `}
             >
@@ -79,16 +79,16 @@ const TextInputField = ({
                 value={value}
                 secureTextEntry={secureTextEntry && !ifSeePassword}
                 className={`${type === "password" ? "w-[80%]" : "w-[100%]"} h-[40px] rounded-[2px] px-1 text-[16px] ${
-                  darkMode ? "text-[#fff]" : "text-[#000]"
+                  darkMode ? "text-[#fff]" : "text-darkestBlack"
                 } font-semibold ${
-                  darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
+                  darkMode ? "caret-[var(--light-green)]" : "caret-darkGreen"
                 } ${
                   type !== "password"
                     ? errors[name]
                       ? "border-b-[1px] border-b-[#ff0000]"
                       : darkMode
-                        ? "border-b-[1px] border-b-[#7decc7]"
-                        : "border-b-[1px] border-b-[#1f8a66]"
+                        ? "border-b-[1px] border-b-[var(--light-green)]"
+                        : "border-b-[1px] border-b-darkGreen"
                     : ""
                 } 
                   ${errors[name] && type !== "password" && "border-b-[1px] border-b-[#ff0000]"}`}
@@ -96,7 +96,7 @@ const TextInputField = ({
               {type === "password" && (
                 <View
                   className={`pl-3 border-l-[1px] ${
-                    darkMode ? "border-l-[#6e6e6d]" : "border-l-[#c6c5c4]"
+                    darkMode ? "border-l-[#6e6e6d]" : "border-l-lighterGrey"
                   }`}
                   onTouchEnd={() => setIfSeePassword(!ifSeePassword)}
                 >

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 import Register from "./Register";
+import colors from "@/Utils/colors/colorVariables";
 
 export default function App() {
   const darkMode = useSelector((state: any) => state.theme?.darkTheme);
@@ -44,7 +45,7 @@ export default function App() {
           name="index"
           options={{
             headerShown: false,
-            statusBarBackgroundColor: darkMode ? "#000" : "#fff",
+            statusBarBackgroundColor: darkMode ? colors.darkestBlack : colors.darkestWhite,
             statusBarStyle: darkMode ? "light" : "dark",
           }}
         />
@@ -53,13 +54,13 @@ export default function App() {
           options={{
             headerShown: true,
             headerStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
-            headerTintColor: darkMode ? "#fff" : "#000",
+            headerTintColor: darkMode ? colors.darkestWhite : colors.darkestBlack,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : "#fff",
+            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             contentStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
           }}
         />
@@ -68,13 +69,13 @@ export default function App() {
           options={{
             headerShown: true,
             headerStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
-            headerTintColor: darkMode ? "#fff" : "#000",
+            headerTintColor: darkMode ? colors.darkestWhite : colors.darkestBlack,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : "#fff",
+            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             contentStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
           }}
         />
@@ -83,14 +84,14 @@ export default function App() {
           options={{
             headerShown: true,
             headerStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
             headerTitle: "Forgot Password",
-            headerTintColor: darkMode ? "#fff" : "#000",
+            headerTintColor: darkMode ? colors.darkestWhite : colors.darkestBlack,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : "#fff",
+            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             contentStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
           }}
         />
@@ -99,9 +100,9 @@ export default function App() {
           options={{
             headerShown: false,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : "#fff",
+            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             contentStyle: {
-              backgroundColor: darkMode ? "#111111" : "#fff",
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
           }}
         />

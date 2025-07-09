@@ -68,7 +68,7 @@ const Login = () => {
                 <View className="relative items-center justify-center">
                   <Text
                     className={`${
-                      !darkMode ? "text-[#000]" : "text-[#7decc7]"
+                      !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
                     } text-[30px]  relative z-[1]`}
                     style={{ fontFamily: "PoppinsExtraBold" }}
                   >
@@ -76,13 +76,13 @@ const Login = () => {
                   </Text>
                   <View
                     className={`w-[100%] h-[10px] ${
-                      !darkMode ? "bg-[#7decc7]" : "bg-[#474747]"
+                      !darkMode ? "bg-[var(--light-green)]" : "bg-[#474747]"
                     }  absolute bottom-[6px] z-0`}
                   ></View>
                 </View>
                 <Text
                   className={`${
-                    !darkMode ? "text-[#000]" : "text-[#7decc7]"
+                    !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
                   } text-[30px]`}
                   style={{
                     fontFamily: "PoppinsExtraBold",
@@ -140,7 +140,7 @@ const Login = () => {
               <View className="w-[100%%] items-center justify-center gap-2 px-[1px]">
                 <TouchableOpacity
                   className={`w-[100%] items-center justify-center p-[14px] ${
-                    !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
+                    !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-darkGreen"
                   } rounded-[12px] ${isLoading ? "opacity-30" : "opacity-100"}`}
                   disabled={!allChecked || isLoading}
                   onPress={methods.handleSubmit(onSubmit)}
@@ -163,7 +163,7 @@ const Login = () => {
               >
                 <Text
                   className={`${
-                    darkMode ? "text-[#7decc7]" : "text-[#1f8a66]"
+                    darkMode ? "text-[var(--light-green)]" : "text-darkGreen"
                   } text-[16px] tracking-wider text-center`}
                   style={{
                     fontFamily: "RobotoBold",
@@ -184,7 +184,7 @@ const Login = () => {
                 <View className="relative items-center justify-center">
                   <Text
                     className={`${
-                      !darkMode ? "text-[#000]" : "text-[#7decc7]"
+                      !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
                     } text-[30px]  relative z-[1]`}
                     style={{ fontFamily: "PoppinsExtraBold" }}
                   >
@@ -192,13 +192,13 @@ const Login = () => {
                   </Text>
                   <View
                     className={`w-[100%] h-[10px] ${
-                      !darkMode ? "bg-[#7decc7]" : "bg-[#474747]"
+                      !darkMode ? "bg-[var(--light-green)]" : "bg-[#474747]"
                     }  absolute bottom-[6px] z-0`}
                   ></View>
                 </View>
                 <Text
                   className={`${
-                    !darkMode ? "text-[#000]" : "text-[#7decc7]"
+                    !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
                   } text-[30px]`}
                   style={{
                     fontFamily: "PoppinsExtraBold",

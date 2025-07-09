@@ -8,35 +8,35 @@ const ChatPageHamMenu = ({ darkMode }: { darkMode: boolean }) => {
     >
       <TouchableOpacity className="p-3">
         <Text
-          className={`${darkMode ? "text-[#fff]" : "text-[#000]"} text-[17px]`}
+          className={`${darkMode ? "text-[#fff]" : "text-darkestBlack"} text-[17px]`}
         >
           Create group
         </Text>
       </TouchableOpacity>
       <TouchableOpacity className="p-3">
         <Text
-          className={`${darkMode ? "text-[#fff]" : "text-[#000]"} text-[17px]`}
+          className={`${darkMode ? "text-[#fff]" : "text-darkestBlack"} text-[17px]`}
         >
           Create community
         </Text>
       </TouchableOpacity>
       <TouchableOpacity className="p-3">
         <Text
-          className={`${darkMode ? "text-[#fff]" : "text-[#000]"} text-[17px]`}
+          className={`${darkMode ? "text-[#fff]" : "text-darkestBlack"} text-[17px]`}
         >
           Create broadCast
         </Text>
       </TouchableOpacity>
       <TouchableOpacity className="p-3">
         <Text
-          className={`${darkMode ? "text-[#fff]" : "text-[#000]"} text-[17px]`}
+          className={`${darkMode ? "text-[#fff]" : "text-darkestBlack"} text-[17px]`}
         >
           Starred
         </Text>
       </TouchableOpacity>
       <TouchableOpacity className="p-3">
         <Text
-          className={`${darkMode ? "text-[#fff]" : "text-[#000]"} text-[17px]`}
+          className={`${darkMode ? "text-[#fff]" : "text-darkestBlack"} text-[17px]`}
         >
           Settings
         </Text>

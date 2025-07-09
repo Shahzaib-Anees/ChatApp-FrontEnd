@@ -69,7 +69,7 @@ const forgetPassword = () => {
             <View className="w-[100%] gap-[2px] mt-4 py-3">
               <Text
                 className={`text-[24px] ${
-                  darkMode ? "text-[#fff]" : "text-[#000]"
+                  darkMode ? "text-[#fff]" : "text-darkestBlack"
                 } tracking-wider`}
                 style={{
                   fontFamily: "PoppinsBold",
@@ -79,7 +79,7 @@ const forgetPassword = () => {
               </Text>
               <Text
                 className={`text-[16px] ${
-                  darkMode ? "text-[#c6c5c4]" : "text-[#868686]"
+                  darkMode ? "text-lighterGrey" : "text-[#868686]"
                 }`}
                 style={{
                   fontFamily: "PoppinsSemiBold",
@@ -110,7 +110,7 @@ const forgetPassword = () => {
             <View className="w-[100%%] items-center justify-center mt-7">
               <TouchableOpacity
                 className={`w-[100%] items-center justify-center p-[14px] ${
-                  !emailChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
+                  !emailChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-darkGreen"
                 } rounded-[12px] ${isLoading ? "opacity-30" : "opacity-100"} `}
                 disabled={!emailChecked || isLoading}
                 onPress={methods.handleSubmit(onSubmit)}
@@ -136,7 +136,7 @@ const forgetPassword = () => {
             <View className="w-[100%] gap-[2px] mt-4 px-6 py-3">
               <Text
                 className={`text-[24px] ${
-                  darkMode ? "text-[#fff]" : "text-[#000]"
+                  darkMode ? "text-[#fff]" : "text-darkestBlack"
                 } tracking-wider`}
                 style={{
                   fontFamily: "PoppinsBold",
@@ -146,7 +146,7 @@ const forgetPassword = () => {
               </Text>
               <Text
                 className={`text-[16px] ${
-                  darkMode ? "text-[#c6c5c4]" : "text-[#868686]"
+                  darkMode ? "text-lighterGrey" : "text-[#868686]"
                 }`}
                 style={{
                   fontFamily: "PoppinsSemiBold",

@@ -71,7 +71,7 @@ const ResetPasswordComponent = ({
           <View className="w-[100%] gap-[2px] mt-4 py-3">
             <Text
               className={`text-[24px] ${
-                darkMode ? "text-[#fff]" : "text-[#000]"
+                darkMode ? "text-[#fff]" : "text-darkestBlack"
               } tracking-wider`}
               style={{
                 fontFamily: "PoppinsBold",
@@ -81,7 +81,7 @@ const ResetPasswordComponent = ({
             </Text>
             <Text
               className={`text-[16px] ${
-                darkMode ? "text-[#c6c5c4]" : "text-[#868686]"
+                darkMode ? "text-lighterGrey" : "text-[#868686]"
               }`}
               style={{
                 fontFamily: "PoppinsSemiBold",
@@ -141,7 +141,7 @@ const ResetPasswordComponent = ({
           <View className="w-[100%%] items-center justify-center gap-2 mt-[20px]">
             <TouchableOpacity
               className={`w-[100%] items-center justify-center p-[14px] ${
-                !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
+                !allChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-darkGreen"
               } rounded-[12px]`}
               disabled={!allChecked || isLoading}
               onPress={methods.handleSubmit(onSubmit)}

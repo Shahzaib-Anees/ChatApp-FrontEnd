@@ -18,7 +18,7 @@ import {
   useVerifyOtpMutation,
 } from "@/Utils/redux/apiQuery/authApi";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserDetails } from "@/Utils/redux/reducers/user.slice";
+// import { fetchUserDetails } from "@/Utils/redux/reducers/user.slice";
 import { router } from "expo-router";
 
 type AuthTypes = "register" | "login" | "forgetPassword";
@@ -120,7 +120,7 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
       }).unwrap();
 
       console.log("Api ==>", apiResponse);
-      dispatch(fetchUserDetails());
+      // dispatch(fetchUserDetails());
       if (authType === "register") {
         setMessageHandlerMessage("Registered Successfully");
         // Navigating to chat screen
@@ -182,8 +182,8 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
                   }}
                   onKeyPress={(e) => handleKeyPress(e, index)}
                   className={`${
-                    darkMode ? "caret-[#7decc7]" : "caret-[#1f8a66]"
-                  } ${darkMode ? "text-[#fff]" : "text-[#000]"} font-semibold`}
+                    darkMode ? "caret-[var(--light-green)]" : "caret-darkGreen"
+                  } ${darkMode ? "text-[#fff]" : "text-darkestBlack"} font-semibold`}
                 />
               );
             })}
@@ -192,7 +192,7 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
             {count > 0 && (
               <Text style={styles.conditionalText}>
                 You can request a new code in{" "}
-                <Text className="text-[#1f8a66] text-[16px]">
+                <Text className="text-darkGreen text-[16px]">
                   {" "}
                   {`00 : ${count < 10 ? `0${count}` : `${count}`}`}
                 </Text>
@@ -202,7 +202,7 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
               <Text style={styles.conditionalText}>
                 Didn't receive the code?{" "}
                 <Text
-                  className="text-[#1f8a66] text-[16px]"
+                  className="text-darkGreen text-[16px]"
                   onPress={askNewCode}
                 >
                   Resend Code
@@ -216,7 +216,7 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
         <View className="w-[100%%] items-center justify-center mt-7 px-4">
           <TouchableOpacity
             className={`w-[100%] items-center justify-center p-[14px] ${
-              !codeChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-[#1f8a66]"
+              !codeChecked ? "bg-[rgba(0,0,0,0.05)]" : "bg-darkGreen"
             } rounded-[12px] ${isLoading || requestOtpProcessing ? "opacity-30" : "opacity-100"}`}
             disabled={!codeChecked || isLoading || requestOtpProcessing}
             onPress={verifyCode}
@@ -261,7 +261,7 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
 const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 2,
-    borderBottomColor: "#1f8a66",
+    borderBottomColor: "darkGreen",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
