@@ -73,7 +73,7 @@ const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
               Home
             </Text>
             <View
-              className={`rounded-full relative`}
+              className={`rounded-full relative z-10`}
               onTouchEnd={() => setOpenSideHamMenu(!openSideHamMenu)}
             >
               <Image

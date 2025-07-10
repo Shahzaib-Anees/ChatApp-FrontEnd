@@ -12,30 +12,44 @@ export default function App() {
     (state: any) => state?.messageHandler?.called
   );
 
+  const token = useSelector((state: any) => state.user?.accessToken);
+  console.log("Token:", token);
+
   const [messages, setMessages] = useState<string[]>([]);
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     console.log("Dark Mode:", darkMode);
-    socketRef.current = io("http://192.168.0.177:3000");
-    socketRef.current.on("connect", () => {
-      console.log("Connected to server");
-    });
+    if (token) {
+      socketRef.current = io("http://192.168.0.177:3000", {
+        auth: {
+          token: token,
+        },
+        transports: ["websocket", "polling"],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+      });
+      // Connect to the server
+      socketRef.current.on("connect", () => {
+        console.log("Connected to server");
+      });
 
-    socketRef.current.on("message", (message) => {
-      console.log("Message received:", message);
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+      socketRef.current.on("message", (message) => {
+        console.log("Message received:", message);
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
 
-    socketRef.current.on("connect_error", (error) => {
-      console.error("Connection error:", error);
-    });
+      socketRef.current.on("connect_error", (error) => {
+        console.error("Connection error:", error);
+      });
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-    };
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
+      };
+    }
   }, []);
 
   return (
@@ -45,7 +59,9 @@ export default function App() {
           name="index"
           options={{
             headerShown: false,
-            statusBarBackgroundColor: darkMode ? colors.darkestBlack : colors.darkestWhite,
+            statusBarBackgroundColor: darkMode
+              ? colors.darkestBlack
+              : colors.darkestWhite,
             statusBarStyle: darkMode ? "light" : "dark",
           }}
         />
@@ -56,9 +72,13 @@ export default function App() {
             headerStyle: {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
-            headerTintColor: darkMode ? colors.darkestWhite : colors.darkestBlack,
+            headerTintColor: darkMode
+              ? colors.darkestWhite
+              : colors.darkestBlack,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+            statusBarBackgroundColor: darkMode
+              ? "#111111"
+              : colors.darkestWhite,
             contentStyle: {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
@@ -71,9 +91,13 @@ export default function App() {
             headerStyle: {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
-            headerTintColor: darkMode ? colors.darkestWhite : colors.darkestBlack,
+            headerTintColor: darkMode
+              ? colors.darkestWhite
+              : colors.darkestBlack,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+            statusBarBackgroundColor: darkMode
+              ? "#111111"
+              : colors.darkestWhite,
             contentStyle: {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
@@ -87,9 +111,13 @@ export default function App() {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
             headerTitle: "Forgot Password",
-            headerTintColor: darkMode ? colors.darkestWhite : colors.darkestBlack,
+            headerTintColor: darkMode
+              ? colors.darkestWhite
+              : colors.darkestBlack,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+            statusBarBackgroundColor: darkMode
+              ? "#111111"
+              : colors.darkestWhite,
             contentStyle: {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },
@@ -100,7 +128,9 @@ export default function App() {
           options={{
             headerShown: false,
             statusBarStyle: darkMode ? "light" : "dark",
-            statusBarBackgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+            statusBarBackgroundColor: darkMode
+              ? "#111111"
+              : colors.darkestWhite,
             contentStyle: {
               backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
             },

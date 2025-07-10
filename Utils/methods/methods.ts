@@ -3,6 +3,7 @@ import { authApi } from "../redux/apiQuery/authApi";
 import store from "../redux/store/store";
 import { jwtDecode } from "jwt-decode";
 import * as Contacts from "expo-contacts";
+import { setDataInUserState } from "../redux/reducers/user.slice";
 
 // Function to fetch new access token from server
 const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
@@ -27,10 +28,10 @@ const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
         : undefined,
     };
 
-    console.log("new userAccessToken" , userAccessToken)
+    console.log("new userAccessToken", userAccessToken);
 
     await AsyncStorage.setItem("accessToken", JSON.stringify(userAccessToken));
-    return true; 
+    return true;
   } catch (error) {
     console.log("Error fetching new access token:", error);
     return false;
@@ -39,8 +40,8 @@ const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
 
 // Check User Authentication
 const checkUserAuthentication = async () => {
-  const accessToken = await AsyncStorage.getItem("accessToken");
-  const refreshToken = await AsyncStorage.getItem("refreshToken");
+  const accessToken: any = await AsyncStorage.getItem("accessToken");
+  const refreshToken: any = await AsyncStorage.getItem("refreshToken");
   if (accessToken !== null) {
     const parsedAccessToken = JSON.parse(accessToken);
     console.log("parsedAccessToken", parsedAccessToken);
@@ -51,7 +52,7 @@ const checkUserAuthentication = async () => {
       // Refresh Token checking if access token is expired
       if (refreshToken !== null) {
         const parsedRefreshToken = JSON.parse(refreshToken);
-        // If access token is expired, check if refresh token is expired
+        //Check if refresh token is expired
         if (parsedRefreshToken?.expiresAt < Date.now()) {
           console.log("refreshToken expired");
           // if refreshToken expired return false
@@ -72,6 +73,10 @@ const checkUserAuthentication = async () => {
     } else {
       // If access token is not expired, return true
       console.log("accessToken verified");
+      const parsedToken = JSON.parse(accessToken);
+      store?.dispatch(
+        setDataInUserState({ name: "accessToken", data: parsedToken?.token })
+      );
       return true;
     }
   } else {

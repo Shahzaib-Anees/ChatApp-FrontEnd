@@ -7,11 +7,14 @@ const userSlice: any = createSlice({
   initialState: {
     info: {},
     uid: null,
+    accessToken: null,
   },
   reducers: {
     setDataInUserState: (state: any, action) => {
       const nameOfState = action.payload?.name;
       const data = action.payload?.data;
+      console.log("nameOfState==>", nameOfState);
+      console.log("data==>", data);
       state[nameOfState] = data;
     },
   },
