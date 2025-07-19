@@ -8,7 +8,18 @@ const user4 = "64c123456789abcdef000004";
 const mockChats = [
   // Single Chat Example
   {
-    members: [user1, user2],
+    members: [
+      {
+        _id: user1,
+        username: "John Doe",
+        profilePicture: "https://example.com/profile1.jpg",
+      },
+      {
+        _id: user2,
+        username: "Jane Smith",
+        profilePicture: "https://example.com/profile2.jpg",
+      },
+    ],
     message: "Hey! How are you?",
     locked: false,
     archived: false,
@@ -19,9 +30,24 @@ const mockChats = [
       allowMemberLeave: true,
     },
   },
-  // Group Chat Example
   {
-    memebers: [user1, user2, user3],
+    members: [
+      {
+        _id: user1,
+        username: "John Doe",
+        profilePicture: "https://example.com/profile1.jpg",
+      },
+      {
+        _id: user2,
+        username: "Jane Smith",
+        profilePicture: "https://example.com/profile2.jpg",
+      },
+      {
+        _id: user3,
+        username: "Alice Johnson",
+        profilePicture: "https://example.com/profile3.jpg",
+      },
+    ],
     message: "Welcome to the project team!",
     locked: true,
     archived: false,
@@ -34,7 +60,23 @@ const mockChats = [
   },
   // Archived Group Chat
   {
-    memebers: [user2, user3, user4],
+    members: [
+      {
+        _id: user1,
+        username: "John Doe",
+        profilePicture: "https://example.com/profile1.jpg",
+      },
+      {
+        _id: user2,
+        username: "Jane Smith",
+        profilePicture: "https://example.com/profile2.jpg",
+      },
+      {
+        _id: user3,
+        username: "Alice Johnson",
+        profilePicture: "https://example.com/profile3.jpg",
+      },
+    ],
     message: "This chat is archived now.",
     locked: false,
     archived: true,

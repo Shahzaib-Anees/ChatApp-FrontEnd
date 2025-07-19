@@ -182,7 +182,7 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
                   }}
                   onKeyPress={(e) => handleKeyPress(e, index)}
                   className={`${
-                    darkMode ? "caret-[var(--light-green)]" : "caret-darkGreen"
+                    darkMode ? "caret-lightGreen" : "caret-darkGreen"
                   } ${darkMode ? "text-[#fff]" : "text-darkestBlack"} font-semibold`}
                 />
               );

@@ -1,11 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
 import { authApi } from "../apiQuery/authApi";
+import { UserInfoModel } from "../reducersModels/user.info.model";
 
-const userSlice: any = createSlice({
+const info: UserInfoModel | null = null;
+const userSlice = createSlice({
   name: "user",
   initialState: {
-    info: {},
+    info: info,
     uid: null,
     accessToken: null,
   },
@@ -13,8 +15,6 @@ const userSlice: any = createSlice({
     setDataInUserState: (state: any, action) => {
       const nameOfState = action.payload?.name;
       const data = action.payload?.data;
-      console.log("nameOfState==>", nameOfState);
-      console.log("data==>", data);
       state[nameOfState] = data;
     },
   },

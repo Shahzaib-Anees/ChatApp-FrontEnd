@@ -24,7 +24,7 @@ const ChatPageHamMenu = ({ darkMode }: { darkMode: boolean }) => {
         <Text
           className={`${darkMode ? "text-[#fff]" : "text-darkestBlack"} text-[17px]`}
         >
-          Create broadCast
+          Create broadcast
         </Text>
       </TouchableOpacity>
       <TouchableOpacity className="p-3">

@@ -13,8 +13,8 @@ export const useSocket = () => {
       socketRef.current = socketServices.connect(token);
 
       // Connection events
-      socketRef.current.on("connect", () => {
-        console.log("Connected to chat server");
+      socketRef.current.on("connect", (socket: any) => {
+        console.log("Connected to chat server" );
       });
 
       socketRef.current.on("disconnect", (reason: any) => {

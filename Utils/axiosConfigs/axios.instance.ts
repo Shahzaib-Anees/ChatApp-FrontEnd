@@ -1,14 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AxiosRequestConfig, AxiosError } from "axios";
+import CONFIGS from "../config/configs.app";
 
 const production = false;
 const environments = {
   development: {
-    baseURL: "http://192.168.0.177:3000/api/",
+    baseURL: CONFIGS.localServerBaseUrl,
   },
   production: {
-    baseURL: "https://chat-app-server-drab.vercel.app/api/",
+    baseURL: CONFIGS.productionServerBaseUrl,
   },
 };
 const axiosInstance = axios.create({

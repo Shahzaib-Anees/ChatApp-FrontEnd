@@ -4,6 +4,7 @@ import store from "../redux/store/store";
 import { jwtDecode } from "jwt-decode";
 import * as Contacts from "expo-contacts";
 import { setDataInUserState } from "../redux/reducers/user.slice";
+import CONFIGS from "../config/configs.app";
 
 // Function to fetch new access token from server
 const fetchNewAccessTokenFromServer = async (refreshToken: string) => {
@@ -114,4 +115,25 @@ async function loadUserContacts() {
   }
 }
 
-export { checkUserAuthentication, getContactPermissions, loadUserContacts };
+const getFilterizedChatRooms = (filter: any, searchQuery: string) => {
+  if (CONFIGS.useMockServer) {
+  }
+  const { data } = store.getState().chatRooms;
+  const filteredChatRooms = data.filter((chatRoom: any) => {
+    return chatRoom.members.some((member: any) => {
+      return member.username.toLowerCase().includes(filter.toLowerCase());
+    });
+  });
+  return filteredChatRooms;
+};
+
+const getGroupsFromChatRoom = () => {};
+const getLockedChatRooms = () => {};
+const getArchivedChatRooms = () => {};
+
+export {
+  checkUserAuthentication,
+  getContactPermissions,
+  loadUserContacts,
+  getFilterizedChatRooms,
+};

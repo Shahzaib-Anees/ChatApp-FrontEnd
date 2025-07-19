@@ -36,7 +36,7 @@ const TextInputField = ({
           darkMode
             ? errors[name]
               ? "text-[#ff0000]"
-              : "text-[var(--light-green)]"
+              : "text-lightGreen"
             : errors[name]
               ? "text-[#ff0000]"
               : "text-darkGreen"
@@ -62,7 +62,7 @@ const TextInputField = ({
                   ? errors[name]?.message
                     ? "border-b-[1px] border-b-[#ff0000]"
                     : darkMode
-                      ? "border-b-[1px] border-b-[var(--light-green)]"
+                      ? "border-b-[1px] border-b-lightGreen"
                       : "border-b-[1px] border-b-darkGreen"
                   : ""
               } `}
@@ -81,13 +81,13 @@ const TextInputField = ({
                 className={`${type === "password" ? "w-[80%]" : "w-[100%]"} h-[40px] rounded-[2px] px-1 text-[16px] ${
                   darkMode ? "text-[#fff]" : "text-darkestBlack"
                 } font-semibold ${
-                  darkMode ? "caret-[var(--light-green)]" : "caret-darkGreen"
+                  darkMode ? "caret-lightGreen" : "caret-darkGreen"
                 } ${
                   type !== "password"
                     ? errors[name]
                       ? "border-b-[1px] border-b-[#ff0000]"
                       : darkMode
-                        ? "border-b-[1px] border-b-[var(--light-green)]"
+                        ? "border-b-[1px] border-b-lightGreen"
                         : "border-b-[1px] border-b-darkGreen"
                     : ""
                 } 

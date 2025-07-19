@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 import Register from "./Register";
 import colors from "@/Utils/colors/colorVariables";
+import { useSocket } from "./hooks/useSocket";
 
 export default function App() {
   const darkMode = useSelector((state: any) => state.theme?.darkTheme);
@@ -17,36 +18,41 @@ export default function App() {
 
   const [messages, setMessages] = useState<string[]>([]);
   const socketRef = useRef<Socket | null>(null);
+  const {
+    connect: connectToWebSockets,
+    disconnect: disconnectToWebSockets,
+    socket,
+  } = useSocket();
 
   useEffect(() => {
     console.log("Dark Mode:", darkMode);
     if (token) {
-      socketRef.current = io("http://192.168.0.177:3000", {
-        auth: {
-          token: token,
-        },
-        transports: ["websocket", "polling"],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-      });
-      // Connect to the server
-      socketRef.current.on("connect", () => {
-        console.log("Connected to server");
-      });
+      // socketRef.current = io("http://192.168.0.177:3000", {
+      //   auth: {
+      //     token: token,
+      //   },
+      //   transports: ["websocket", "polling"],
+      //   reconnection: true,
+      //   reconnectionAttempts: 5,
+      //   reconnectionDelay: 1000,
+      // });
+      // // Connect to the server
+      // socketRef.current.on("connect", () => {
+      //   console.log("Connected to server");
+      // });
 
-      socketRef.current.on("message", (message) => {
-        console.log("Message received:", message);
-        setMessages((prevMessages) => [...prevMessages, message]);
-      });
+      // socketRef.current.on("message", (message) => {
+      //   console.log("Message received:", message);
+      //   setMessages((prevMessages) => [...prevMessages, message]);
+      // });
 
-      socketRef.current.on("connect_error", (error) => {
-        console.error("Connection error:", error);
-      });
-
+      // socketRef.current.on("connect_error", (error) => {
+      //   console.error("Connection error:", error);
+      // });
+      connectToWebSockets();
       return () => {
-        if (socketRef.current) {
-          socketRef.current.disconnect();
+        if (socket) {
+          disconnectToWebSockets();
         }
       };
     }

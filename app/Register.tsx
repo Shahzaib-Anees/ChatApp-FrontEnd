@@ -80,7 +80,7 @@ const Register = () => {
               <View className="flex-row items-center justify-center gap-2">
                 <Text
                   className={`${
-                    !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                    !darkMode ? "text-darkestBlack" : "text-lightGreen"
                   } text-[30px]`}
                   style={{
                     fontFamily: "PoppinsExtraBold",
@@ -91,7 +91,7 @@ const Register = () => {
                 <View className="relative items-center justify-center">
                   <Text
                     className={`${
-                      !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                      !darkMode ? "text-darkestBlack" : "text-lightGreen"
                     } text-[30px]  relative z-[1]`}
                     style={{ fontFamily: "PoppinsExtraBold" }}
                   >
@@ -198,7 +198,7 @@ const Register = () => {
               <View className="flex-row items-center justify-center gap-2">
                 <Text
                   className={`${
-                    !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                    !darkMode ? "text-darkestBlack" : "text-lightGreen"
                   } text-[30px]`}
                   style={{
                     fontFamily: "PoppinsExtraBold",
@@ -209,7 +209,7 @@ const Register = () => {
                 <View className="relative items-center justify-center">
                   <Text
                     className={`${
-                      !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                      !darkMode ? "text-darkestBlack" : "text-lightGreen"
                     } text-[30px]  relative z-[1]`}
                     style={{ fontFamily: "PoppinsExtraBold" }}
                   >

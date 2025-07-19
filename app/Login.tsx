@@ -68,7 +68,7 @@ const Login = () => {
                 <View className="relative items-center justify-center">
                   <Text
                     className={`${
-                      !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                      !darkMode ? "text-darkestBlack" : "text-lightGreen"
                     } text-[30px]  relative z-[1]`}
                     style={{ fontFamily: "PoppinsExtraBold" }}
                   >
@@ -82,7 +82,7 @@ const Login = () => {
                 </View>
                 <Text
                   className={`${
-                    !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                    !darkMode ? "text-darkestBlack" : "text-lightGreen"
                   } text-[30px]`}
                   style={{
                     fontFamily: "PoppinsExtraBold",
@@ -163,7 +163,7 @@ const Login = () => {
               >
                 <Text
                   className={`${
-                    darkMode ? "text-[var(--light-green)]" : "text-darkGreen"
+                    darkMode ? "text-lightGreen" : "text-darkGreen"
                   } text-[16px] tracking-wider text-center`}
                   style={{
                     fontFamily: "RobotoBold",
@@ -184,7 +184,7 @@ const Login = () => {
                 <View className="relative items-center justify-center">
                   <Text
                     className={`${
-                      !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                      !darkMode ? "text-darkestBlack" : "text-lightGreen"
                     } text-[30px]  relative z-[1]`}
                     style={{ fontFamily: "PoppinsExtraBold" }}
                   >
@@ -198,7 +198,7 @@ const Login = () => {
                 </View>
                 <Text
                   className={`${
-                    !darkMode ? "text-darkestBlack" : "text-[var(--light-green)]"
+                    !darkMode ? "text-darkestBlack" : "text-lightGreen"
                   } text-[30px]`}
                   style={{
                     fontFamily: "PoppinsExtraBold",
