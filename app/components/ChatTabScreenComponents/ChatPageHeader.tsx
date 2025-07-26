@@ -10,15 +10,46 @@ import React, { useEffect, useState } from "react";
 import { ChatPageHeaderInterface } from "@/types/chatPageHeader.types";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import TextInputField from "../global/TextInputField";
-import ChatPageHamMenu from "./ChatPageHamMenu";
-import { Modal } from "react-native";
 import colors from "@/Utils/colors/colorVariables";
+import HamMenuComponent from "../../../customComponents/HamMenuComponent/HamMenuComponent";
 
 const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
   const [view, setView] = useState<ChatPageHeaderInterface>(
     ChatPageHeaderInterface.header_interface
   );
+
+  const hamMenuElements = [
+    {
+      text: "Create group",
+      onPress: () => {
+        console.log("Settings pressed");
+      },
+    },
+    {
+      text: "Create community",
+      onPress: () => {
+        console.log("Settings pressed");
+      },
+    },
+    {
+      text: "Create broadcast",
+      onPress: () => {
+        console.log("Profile pressed");
+      },
+    },
+    {
+      text: "Starred",
+      onPress: () => {
+        console.log("Help pressed");
+      },
+    },
+    {
+      text: "Settings",
+      onPress: () => {
+        console.log("Logout pressed");
+      },
+    },
+  ];
 
   const [openSideHamMenu, setOpenSideHamMenu] = useState<boolean>(false);
   useEffect(() => {});
@@ -83,7 +114,12 @@ const ChatPageHeader = ({ darkMode }: { darkMode: boolean }) => {
                 resizeMode="cover"
                 style={{ width: 40, height: 40, borderRadius: 50 }}
               />
-              {openSideHamMenu && <ChatPageHamMenu darkMode={darkMode} />}
+              {openSideHamMenu && (
+                <HamMenuComponent
+                  darkMode={darkMode}
+                  elements={hamMenuElements}
+                />
+              )}
             </View>
           </View>
         );

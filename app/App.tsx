@@ -142,6 +142,32 @@ export default function App() {
             },
           }}
         />
+        <Stack.Screen
+          name="locked-chats"
+          options={{
+            headerShown: false,
+            statusBarStyle: darkMode ? "light" : "dark",
+            statusBarBackgroundColor: darkMode
+              ? "#111111"
+              : colors.darkestWhite,
+            contentStyle: {
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="archived-chats"
+          options={{
+            headerShown: false,
+            statusBarStyle: darkMode ? "light" : "dark",
+            statusBarBackgroundColor: darkMode
+              ? "#111111"
+              : colors.darkestWhite,
+            contentStyle: {
+              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+            },
+          }}
+        />
       </Stack>
     </>
   );

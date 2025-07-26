@@ -3,12 +3,21 @@ import React from "react";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ChatFiltersListSection from "./ChatFiltersListSection";
+import { router } from "expo-router";
 
 const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
+  const handleLockedChatsPress = () => {
+    router.push("/locked-chats");
+  };
+
+  const handleArchivedChatsPress = () => {
+    router.push("/archived-chats");
+  };
   return (
     <View className="px-2">
       <ChatFiltersListSection darkMode={darkMode} />
       <TouchableOpacity
+        onPress={handleLockedChatsPress}
         className={`h-[48px] flex-row items-center px-4 gap-[36px] mt-4 border-b-[1px] ${darkMode ? "border-[#222121]" : "border-[#faf8f8]"}`}
       >
         <Feather
@@ -26,6 +35,7 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={handleArchivedChatsPress}
         className={`h-[48px] flex-row items-center px-4 gap-[36px] border-b-[1px] ${darkMode ? "border-[#222121]" : "border-[#faf8f8]"}`}
       >
         <Ionicons
@@ -43,9 +53,7 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
         </Text>
       </TouchableOpacity>
       {}
-      <View>
-        
-      </View>
+      <View></View>
     </View>
   );
 };

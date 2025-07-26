@@ -88,21 +88,20 @@ export default function App() {
         console.log("Authenticated");
         try {
           const result = await fetchUserDetails(null);
-
           // Check if the mutation was successful
           if ("data" in result) {
             console.log("User Details Fetched Successfully");
+            router.replace("/chatsTabs");
           } else if ("error" in result) {
             console.log("API Error fetching user details:", result.error);
           }
+          await SplashScreen.hideAsync();
         } catch (error) {
           console.log("Exception while fetching user details:", error);
         }
-        router.replace("/chatsTabs");
       } else {
         console.log("Not Authenticated");
       }
-      await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
 
