@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setDataInUserState } from "../reducers/user.slice";
 import { jwtDecode } from "jwt-decode";
 
-const authApi = createApi({
+  const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: axiosBaseQuery(),
   endpoints: (builder) => ({

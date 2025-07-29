@@ -47,7 +47,7 @@ const LockedChats = () => {
             />
           </TouchableOpacity>
           {openHamMenu && (
-            <HamMenuComponent darkMode={darkMode} elements={hamMenuElements} />
+            <HamMenuComponent darkMode={darkMode} elements={hamMenuElements} top={27} right={-8}/>
           )}
         </View>
       </View>

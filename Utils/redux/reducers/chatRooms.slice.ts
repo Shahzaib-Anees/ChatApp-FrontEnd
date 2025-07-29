@@ -8,10 +8,12 @@ interface ChatRoom {
 
 interface ChatRoomsState {
   chatRooms: ChatRoom[];
+  isLockedChatsAuthenticated: boolean;
 }
 
 const initialState: ChatRoomsState = {
   chatRooms: [],
+  isLockedChatsAuthenticated: false,
 };
 
 const chatRooms = createSlice({
@@ -35,10 +37,19 @@ const chatRooms = createSlice({
       const id = action.payload;
       state.chatRooms = state.chatRooms.filter((room) => room.id !== id);
     },
+    setValueInChatRoomsState: (state: any, action) => {
+      const { name, data } = action.payload;
+      state[name] = data;
+    },
   },
 });
 
-export const { setChatRooms, addChatRoom, updateChatRoom, deleteChatRoom } =
-  chatRooms.actions;
+export const {
+  setChatRooms,
+  addChatRoom,
+  updateChatRoom,
+  deleteChatRoom,
+  setValueInChatRoomsState,
+} = chatRooms.actions;
 
 export default chatRooms.reducer;

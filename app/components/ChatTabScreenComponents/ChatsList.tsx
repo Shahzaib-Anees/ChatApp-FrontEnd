@@ -1,13 +1,47 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ChatFiltersListSection from "./ChatFiltersListSection";
 import { router } from "expo-router";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useDispatch, useSelector } from "react-redux";
+import { setValueInChatRoomsState } from "@/Utils/redux/reducers/chatRooms.slice";
 
 const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
-  const handleLockedChatsPress = () => {
-    router.push("/locked-chats");
+  const [] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const isLockedChatsUnlocked = useSelector(
+    (state: any) => state.chatRoom.isLockedChatsAuthenticated
+  );
+  console.log("isLockedChatsUnlocked", isLockedChatsUnlocked);
+  const handleLockedChatsPress = async () => {
+    if (!isLockedChatsUnlocked) {
+      try {
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Unlock your locked chats",
+          disableDeviceFallback: false,
+          // // fallbackLabel: "Use Secret Code",
+          // requireConfirmation: true,
+        });
+
+        if (result.success) {
+          dispatch(
+            setValueInChatRoomsState({
+              name: "isLockedChatsAuthenticated",
+              data: true,
+            })
+          );
+          router.push("/locked-chats");
+        } else {
+          console.log("❌ Device authentication failed");
+        }
+      } catch (error) {
+        console.error("Device authentication error:", error);
+      }
+    } else {
+      router.push("/locked-chats");
+    }
   };
 
   const handleArchivedChatsPress = () => {

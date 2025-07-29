@@ -1,17 +1,20 @@
 import MessageHandler from "@/customComponents/MessageHandler/MessageHandler";
 import { Stack } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 import Register from "./Register";
 import colors from "@/Utils/colors/colorVariables";
 import { useSocket } from "./hooks/useSocket";
+import { setValueInChatRoomsState } from "@/Utils/redux/reducers/chatRooms.slice";
+import { AppState } from "react-native";
 
 export default function App() {
   const darkMode = useSelector((state: any) => state.theme?.darkTheme);
   const messageHandlerState = useSelector(
     (state: any) => state?.messageHandler?.called
   );
+  const dispatch = useDispatch();
 
   const token = useSelector((state: any) => state.user?.accessToken);
   console.log("Token:", token);
@@ -25,30 +28,20 @@ export default function App() {
   } = useSocket();
 
   useEffect(() => {
-    console.log("Dark Mode:", darkMode);
+    const handleAppStateChange = (nextAppState: any) => {
+      console.log("nextAppState", nextAppState);
+      if (nextAppState === "background" || nextAppState === "inactive") {
+        setTimeout(() => {
+          dispatch(
+            setValueInChatRoomsState({
+              name: "isLockedChatsAuthenticated",
+              data: false,
+            })
+          );
+        }, 60000);
+      }
+    };
     if (token) {
-      // socketRef.current = io("http://192.168.0.177:3000", {
-      //   auth: {
-      //     token: token,
-      //   },
-      //   transports: ["websocket", "polling"],
-      //   reconnection: true,
-      //   reconnectionAttempts: 5,
-      //   reconnectionDelay: 1000,
-      // });
-      // // Connect to the server
-      // socketRef.current.on("connect", () => {
-      //   console.log("Connected to server");
-      // });
-
-      // socketRef.current.on("message", (message) => {
-      //   console.log("Message received:", message);
-      //   setMessages((prevMessages) => [...prevMessages, message]);
-      // });
-
-      // socketRef.current.on("connect_error", (error) => {
-      //   console.error("Connection error:", error);
-      // });
       connectToWebSockets();
       return () => {
         if (socket) {
@@ -56,6 +49,7 @@ export default function App() {
         }
       };
     }
+    AppState.addEventListener("change", handleAppStateChange);
   }, []);
 
   return (
@@ -148,10 +142,10 @@ export default function App() {
             headerShown: false,
             statusBarStyle: darkMode ? "light" : "dark",
             statusBarBackgroundColor: darkMode
-              ? "#111111"
+              ? "#000000"
               : colors.darkestWhite,
             contentStyle: {
-              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+              backgroundColor: darkMode ? "#000000" : colors.darkestWhite,
             },
           }}
         />
@@ -161,10 +155,10 @@ export default function App() {
             headerShown: false,
             statusBarStyle: darkMode ? "light" : "dark",
             statusBarBackgroundColor: darkMode
-              ? "#111111"
+              ? "#000000"
               : colors.darkestWhite,
             contentStyle: {
-              backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+              backgroundColor: darkMode ? "#000000" : colors.darkestWhite,
             },
           }}
         />

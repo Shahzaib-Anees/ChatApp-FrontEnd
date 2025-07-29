@@ -4,6 +4,7 @@ import themeSlice from "../reducers/theme.slice";
 import messageHandlerSlice from "../reducers/messageHandler.slice";
 import chatRoomReducer from "../reducers/chatRooms.slice";
 import { authApi } from "../apiQuery/authApi";
+import { lockChatApi } from "../apiQuery/lockChatApi";
 
 const store: any = configureStore({
   reducer: {
@@ -12,9 +13,10 @@ const store: any = configureStore({
     messageHandler: messageHandlerSlice,
     chatRoom: chatRoomReducer,
     [authApi.reducerPath]: authApi.reducer,
+    [lockChatApi.reducerPath]: lockChatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware().concat([authApi.middleware, lockChatApi.middleware]),
 });
 
 export default store;
