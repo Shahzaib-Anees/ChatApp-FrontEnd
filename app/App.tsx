@@ -38,7 +38,7 @@ export default function App() {
               data: false,
             })
           );
-        }, 60000);
+        }, 1000);
       }
     };
     if (token) {

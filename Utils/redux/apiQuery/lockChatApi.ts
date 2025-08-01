@@ -7,14 +7,14 @@ const lockChatApi = createApi({
   endpoints: (builder) => ({
     setSecretCode: builder.mutation({
       query: ({ code }) => ({
-        url: "chat/setSecurityCode",
+        url: "chat/setSecretCode",
         method: "POST",
         data: { secretCode: code },
       }),
     }),
     verifySecretCode: builder.mutation({
       query: ({ code }) => ({
-        url: "chat/verifySecurityCode",
+        url: "chat/verifySecretCode",
         method: "POST",
         data: { secretCode: code },
       }),

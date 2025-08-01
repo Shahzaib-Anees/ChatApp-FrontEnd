@@ -13,12 +13,13 @@ import Settings from "./screens/ChatTabsScreen/Settings";
 
 const ChatTabs = () => {
   const Tab = createBottomTabNavigator();
-  const darkMode = useSelector((state: any) => state.theme?.darkTheme);
+  const appThemeState = useSelector((state: any) => state.theme);
+  const darkMode = appThemeState.darkTheme;
+  const showTabNavigator = appThemeState.showTabNavigator;
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarHideOnKeyboard: true,
-        tabBarStyle: { backgroundColor: darkMode ? "#121212" : "white" },
       }}
     >
       <Tab.Screen
@@ -27,6 +28,10 @@ const ChatTabs = () => {
         options={{
           headerShown: false,
           headerTintColor: darkMode ? "white" : "black",
+          tabBarStyle: {
+            display: showTabNavigator ? "flex" : "none",
+            backgroundColor: darkMode ? "#121212" : "white",
+          },
           tabBarLabel: ({ focused }) => (
             <Text
               style={{
@@ -52,6 +57,10 @@ const ChatTabs = () => {
         options={{
           headerShown: false,
           headerTintColor: darkMode ? "white" : "black",
+          tabBarStyle: {
+            display: showTabNavigator ? "flex" : "none",
+            backgroundColor: darkMode ? "#121212" : "white",
+          },
           tabBarLabel: ({ focused }) => (
             <Text
               style={{
@@ -77,6 +86,10 @@ const ChatTabs = () => {
         options={{
           headerShown: false,
           headerTintColor: darkMode ? "white" : "black",
+          tabBarStyle: {
+            display: showTabNavigator ? "flex" : "none",
+            backgroundColor: darkMode ? "#121212" : "white",
+          },
           tabBarLabel: ({ focused }) => (
             <Text
               style={{
@@ -102,7 +115,10 @@ const ChatTabs = () => {
         options={{
           headerShown: true,
           headerTintColor: darkMode ? "white" : "black",
-          // header
+          tabBarStyle: {
+            display: showTabNavigator ? "flex" : "none",
+            backgroundColor: darkMode ? "#121212" : "white",
+          },
           tabBarLabel: ({ focused }) => (
             <Text
               style={{

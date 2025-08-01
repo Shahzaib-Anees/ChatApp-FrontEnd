@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Image,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -29,20 +27,11 @@ import {
 } from "@expo-google-fonts/poppins";
 import { checkUserAuthentication } from "@/Utils/methods/methods";
 import { useGetUserDetailsMutation } from "@/Utils/redux/apiQuery/authApi";
-// import { useGetUserDetailsMutation } from "@/Utils/redux/apiQuery/authApi";
 
-// SplashScreen.preventAutoHideAsync();
-
-// SplashScreen.setOptions({
-//   duration: 1000,
-//   fade: true,
-// });
-
-export default function App() {
+export default function WelcomeScreen() {
   const [appIsReady, setAppIsReady] = useState(false);
   const selector = useSelector((state: any) => state.user);
   const [fetchUserDetails] = useGetUserDetailsMutation();
-  // const dispatch = useDispatch();
   const { info } = selector;
 
   const [fontsLoaded, fontError] = useFonts({
@@ -54,30 +43,20 @@ export default function App() {
     PoppinsBold: Poppins_700Bold,
     PoppinsExtraBold: Poppins_800ExtraBold,
   });
+
   useEffect(() => {
     async function prepare() {
       try {
         await SplashScreen.preventAutoHideAsync();
         await Font.loadAsync(Entypo.font);
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        // Theme checking
         const themeMode = await AsyncStorage.getItem("themeMode");
-        // if (themeMode !== null) {
-        //   if (themeMode === "dark") {
-        //     dispatch(setTheme({ darkMode: true }));
-        //   } else {
-        //     dispatch(setTheme({ darkMode: false }));
-        //   }
-        // } else {
-        //   dispatch(setTheme({ darkMode: false }));
-        // }
       } catch (e) {
         console.warn(e);
       } finally {
         setAppIsReady(true);
       }
     }
-
     prepare();
   }, []);
 
@@ -88,7 +67,6 @@ export default function App() {
         console.log("Authenticated");
         try {
           const result = await fetchUserDetails(null);
-          // Check if the mutation was successful
           if ("data" in result) {
             console.log("User Details Fetched Successfully");
             router.replace("/chatsTabs");
@@ -101,6 +79,7 @@ export default function App() {
         }
       } else {
         console.log("Not Authenticated");
+        await SplashScreen.hideAsync();
       }
     }
   }, [appIsReady]);
@@ -140,37 +119,39 @@ export default function App() {
             family.
           </Text>
         </View>
-        <View className="w-[100%] items-center justify-center px-4 mt-[15px] ">
-          <TouchableOpacity className="w-[100%] bg-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]">
-            <Link href={"/Register"} className="w-[100%]">
-              <Text className="text-darkestBlack text-[18px] font-semibold text-center">
-                Sign up with email
-              </Text>
-            </Link>
-          </TouchableOpacity>
+
+        {/* Fixed Sign Up Button */}
+        <View className="w-[100%] items-center justify-center px-4 mt-[15px]">
+          <View
+            className="w-[100%] bg-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]"
+            onTouchEnd={() => router.push("/Register")}
+          >
+            <Text className="text-darkestBlack text-[18px] font-semibold text-center">
+              Sign up with email
+            </Text>
+          </View>
         </View>
+
         <View className="flex-row items-center justify-center gap-2 w-[100%] px-28 mt-[15px]">
           <View className="w-[100%] h-[1px] bg-[#969594]"></View>
           <Text className="text-lighterGrey text-[18px] font-semibold">OR</Text>
           <View className="w-[100%] h-[1px] bg-[#969594]"></View>
         </View>
+
         <View className="w-[100%] items-center justify-center mt-[10px] px-4 gap-[15px]">
           <Text className="text-lighterGrey text-[17px] font-semibold tracking-widest">
             Already have an account ?
           </Text>
-          <TouchableOpacity className="w-[100%] border-[1px] border-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]">
-            <Link href={"/Login"} className="w-[100%]">
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: "#fff",
-                }}
-                className="text-[#fff] text-[18px] font-semibold text-center"
-              >
-                Log In
-              </Text>
-            </Link>
-          </TouchableOpacity>
+
+          {/* Fixed Log In Button */}
+          <View
+            className="w-[100%] border-[1px] border-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]"
+            onTouchEnd={() => router.push("/Login")}
+          >
+            <Text className="text-[#fff] text-[18px] font-semibold text-center">
+              Log In
+            </Text>
+          </View>
         </View>
       </SafeAreaView>
     </LinearGradient>
