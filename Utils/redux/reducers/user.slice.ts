@@ -20,6 +20,6 @@ const userSlice = createSlice({
   },
 });
 
+// User Details Fetching Thunk
 export const { setDataInUserState } = userSlice.actions;
-
 export default userSlice.reducer;

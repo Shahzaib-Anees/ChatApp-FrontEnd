@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
@@ -99,29 +94,29 @@ export default function WelcomeScreen() {
       <SafeAreaView className="flex-1 items-center gap-1 bg-[rgba(0,0,0,0.4)] px-3">
         <View className="flex-row items-center justify-center gap-1 mt-[35px]">
           <Text
-            className="text-[#fff] text-[40px]"
+            className="text-[#fff] text-[30px]"
             style={{
               fontFamily: "PermanentMarker",
             }}
           >
             C
           </Text>
-          <Text className="text-[#fff] text-[22px] font-[900] tracking-wider">
+          <Text className="text-[#fff] text-[18px] font-[900] tracking-wider">
             Chatbox
           </Text>
         </View>
         <View>
-          <Text className="text-[#fff] text-[87px] font-[400] tracking-wider">
+          <Text className="text-[#fff] text-[80px] font-[400] tracking-wider">
             Connect friends <Text className="font-[900]">easily & quickly</Text>
           </Text>
-          <Text className="text-lighterGrey text-[20px] tracking-wider mt-3 leading-[30px]">
+          <Text className="text-lighterGrey text-[20px] tracking-wider mt-2 ml-1 leading-[30px]">
             Our chat app is the perfect way to stay connected with friends and
             family.
           </Text>
         </View>
 
         {/* Fixed Sign Up Button */}
-        <View className="w-[100%] items-center justify-center px-4 mt-[15px]">
+        <View className="w-[100%] items-center justify-center px-4 mt-[10px]">
           <View
             className="w-[100%] bg-[#fff] h-[45px] flex-row items-center justify-center rounded-[10px]"
             onTouchEnd={() => router.push("/Register")}
@@ -132,7 +127,7 @@ export default function WelcomeScreen() {
           </View>
         </View>
 
-        <View className="flex-row items-center justify-center gap-2 w-[100%] px-28 mt-[15px]">
+        <View className="flex-row items-center justify-center gap-2 w-[100%] px-28 mt-[10px]">
           <View className="w-[100%] h-[1px] bg-[#969594]"></View>
           <Text className="text-lighterGrey text-[18px] font-semibold">OR</Text>
           <View className="w-[100%] h-[1px] bg-[#969594]"></View>

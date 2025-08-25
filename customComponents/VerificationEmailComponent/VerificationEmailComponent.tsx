@@ -123,16 +123,13 @@ const VerificationEmailComponent = <T extends AuthTypes = "register">({
       // dispatch(fetchUserDetails());
       if (authType === "register") {
         setMessageHandlerMessage("Registered Successfully");
-        // Navigating to chat screen
         router.replace("/chatsTabs");
       } else if (authType === "login") {
         setMessageHandlerMessage("Logged In Successfully");
         console.log("Logged In Successfully");
-        // Navigating to chat screen
         router.replace("/chatsTabs");
       } else if (authType === "forgetPassword") {
         setMessageHandlerMessage("Verified Successfully");
-        // Navigating to Reset Password
         (
           setView as React.Dispatch<React.SetStateAction<Forget_Password_Types>>
         )(Forget_Password_Types.reset_password);

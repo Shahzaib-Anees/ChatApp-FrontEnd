@@ -33,7 +33,7 @@ const mockChats = [
   {
     members: [
       {
-        _id: user1,
+        _id: user1, 
         username: "John Doe",
         profilePicture: "https://example.com/profile1.jpg",
       },

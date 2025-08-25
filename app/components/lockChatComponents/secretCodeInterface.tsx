@@ -7,6 +7,7 @@ import TextInputField from "../global/TextInputField";
 import { useVerifySecretCodeMutation } from "@/Utils/redux/apiQuery/lockChatApi";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
+import { setValueInChatRoomsState } from "@/Utils/redux/reducers/chatRooms.slice";
 
 const SecretCodeInterface = ({
   darkMode,
@@ -61,6 +62,12 @@ const SecretCodeInterface = ({
       if (response?.status === 200) {
         onClose?.();
         clearErrors("secretCode");
+        dispatch(
+          setValueInChatRoomsState({
+            name: "isLockedChatsAuthenticated",
+            data: true,
+          })
+        );
         router.push("/locked-chats");
       } else {
         setError("secretCode", {

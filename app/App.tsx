@@ -54,7 +54,15 @@ export default function App() {
 
   return (
     <>
-      <Stack>
+      <Stack
+        screenOptions={{
+          animation: "slide_from_right",
+          contentStyle: {
+            backgroundColor: darkMode ? "#111111" : colors.darkestWhite,
+          },
+          freezeOnBlur: false,
+        }}
+      >
         <Stack.Screen
           name="index"
           options={{

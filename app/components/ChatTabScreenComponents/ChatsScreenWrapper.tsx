@@ -11,7 +11,7 @@ import AuthenticationOptionModal from "../lockChatComponents/authenticationOptio
 import SecretCodeModal from "../lockChatComponents/secretCodeInterface";
 import { setShowTabNavigator } from "@/Utils/redux/reducers/theme.slice";
 
-const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
+const ChatsScreenWrapper = ({ darkMode }: { darkMode: boolean }) => {
   const [openAuthenticationOptionModal, setOpenAuthenticateOptionModal] =
     useState<boolean>(false);
   const [openSecretCodeModal, setSecretCodeModal] = useState<boolean>(false);
@@ -19,12 +19,10 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
   const isLockedChatsUnlocked = useSelector(
     (state: any) => state.chatRoom.isLockedChatsAuthenticated
   );
-  console.log("isLockedChatsUnlocked", isLockedChatsUnlocked);
   const handleLockedChatsPress = async () => {
     if (!isLockedChatsUnlocked) {
       try {
         const hasHardWare = await LocalAuthentication.hasHardwareAsync();
-        console.log("Has hardware:", hasHardWare);
         if (hasHardWare) {
           const isEnrolled = await LocalAuthentication.isEnrolledAsync();
           if (isEnrolled) {
@@ -41,9 +39,6 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
     }
   };
 
-  const handleArchivedChatsPress = () => {
-    router.push("/archived-chats");
-  };
   return (
     <>
       <View className="px-2">
@@ -67,7 +62,7 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={handleArchivedChatsPress}
+          onPress={() => router.push("/archived-chats")}
           className={`h-[48px] flex-row items-center px-4 gap-[36px] border-b-[1px] ${darkMode ? "border-[#222121]" : "border-[#faf8f8]"}`}
         >
           <Ionicons
@@ -84,6 +79,7 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
             Archived chats
           </Text>
         </TouchableOpacity>
+        {/* Chat List Container */}
         <View></View>
       </View>
       {openAuthenticationOptionModal && (
@@ -105,4 +101,4 @@ const ChatsList = ({ darkMode }: { darkMode: boolean }) => {
   );
 };
 
-export default ChatsList;
+export default ChatsScreenWrapper;
